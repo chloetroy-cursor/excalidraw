@@ -63,6 +63,28 @@
     flex-shrink: 0;
   }
 
+  .mobile-toolbar .toolbar-color-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    .toolbar-color-controls__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .color-picker-container {
+      padding: 0;
+    }
+
+    .color-picker__button.compact-sizing {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
   .mobile-toolbar-undo {
     display: flex;
     align-items: center;

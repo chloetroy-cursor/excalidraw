@@ -60,4 +60,21 @@
     min-width: 11.875rem;
     z-index: 1;
   }
+
+  .toolbar-color-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .color-picker-container {
+      padding: 0;
+    }
+  }
 }

@@ -119,8 +119,10 @@ export const MobileMenu = ({
     return (
       <MobileToolBar
         app={app}
+        appState={appState}
         onHandToolToggle={onHandToolToggle}
         setAppState={setAppState}
+        renderAction={actionManager.renderAction}
       />
     );
   };
