@@ -101,6 +101,10 @@ Please add the latest change on the top under the correct section.
 
 ## Excalidraw Library
 
+### Features
+
+- Added accessible toolbar color controls with `aria-label` and `title` tooltips on the stroke and fill color pickers.
+
 ## 0.18.0 (2025-03-11)
 
 ### Highlights
