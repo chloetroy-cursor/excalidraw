@@ -100,6 +100,36 @@ describe("actionStyles", () => {
     expect(firstRect.opacity).toBe(60);
   });
 
+  it("exposes accessible aria-labels on the toolbar stroke and fill pickers", async () => {
+    await withExcalidrawDimensions(
+      { width: 1440, height: 900 },
+      async () => {
+        UI.clickTool("rectangle");
+
+        const container = await waitFor(() => {
+          const el = document.querySelector(
+            '[data-testid="toolbar-color-controls"]',
+          );
+          expect(el).not.toBeNull();
+          return el as HTMLElement;
+        });
+
+        const strokePicker = container.querySelector(
+          '[aria-label="Stroke color picker"]',
+        );
+        const fillPicker = container.querySelector(
+          '[aria-label="Fill color picker"]',
+        );
+
+        expect(strokePicker).not.toBeNull();
+        expect(strokePicker).toHaveAttribute("title", "Stroke color picker");
+
+        expect(fillPicker).not.toBeNull();
+        expect(fillPicker).toHaveAttribute("title", "Fill color picker");
+      },
+    );
+  });
+
   it("applies colors from desktop toolbar color pickers", async () => {
     await withExcalidrawDimensions(
       { width: 1440, height: 900 },
