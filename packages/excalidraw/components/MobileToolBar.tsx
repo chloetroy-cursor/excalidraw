@@ -12,6 +12,7 @@ import { isHandToolActive } from "../appState";
 import { useTunnels } from "../context/tunnels";
 
 import { HandButton } from "./HandButton";
+import { ToolbarColorControls } from "./Actions";
 import { ToolButton } from "./ToolButton";
 import DropdownMenu from "./dropdownMenu/DropdownMenu";
 import { ToolPopover } from "./ToolPopover";
@@ -39,6 +40,7 @@ import {
 import "./ToolIcon.scss";
 import "./MobileToolBar.scss";
 
+import type { ActionManager } from "../actions/manager";
 import type { AppClassProperties, ToolType, UIAppState } from "../types";
 
 const SHAPE_TOOLS = [
@@ -83,14 +85,18 @@ const LINEAR_ELEMENT_TOOLS = [
 
 type MobileToolBarProps = {
   app: AppClassProperties;
+  appState: UIAppState;
   onHandToolToggle: () => void;
   setAppState: React.Component<any, UIAppState>["setState"];
+  renderAction: ActionManager["renderAction"];
 };
 
 export const MobileToolBar = ({
   app,
+  appState,
   onHandToolToggle,
   setAppState,
+  renderAction,
 }: MobileToolBarProps) => {
   const activeTool = app.state.activeTool;
   const [isOtherShapesMenuOpen, setIsOtherShapesMenuOpen] = useState(false);
@@ -373,6 +379,15 @@ export const MobileToolBar = ({
           onChange={() => handleToolChange("frame")}
         />
       )}
+
+      <div className="mobile-toolbar-separator" />
+
+      <ToolbarColorControls
+        appState={appState}
+        elementsMap={app.scene.getNonDeletedElementsMap()}
+        renderAction={renderAction}
+        variant="mobile"
+      />
 
       {/* Other Shapes */}
       <DropdownMenu open={isOtherShapesMenuOpen}>

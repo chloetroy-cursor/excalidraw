@@ -135,6 +135,46 @@ export const canChangeBackgroundColor = (
   );
 };
 
+export const ToolbarColorControls = ({
+  appState,
+  elementsMap,
+  renderAction,
+  variant = "desktop",
+}: {
+  appState: UIAppState;
+  elementsMap: NonDeletedElementsMap | NonDeletedSceneElementsMap;
+  renderAction: ActionManager["renderAction"];
+  variant?: "desktop" | "mobile";
+}) => {
+  const targetElements = getTargetElements(elementsMap, appState);
+  const showStroke = canChangeStrokeColor(appState, targetElements);
+  const showBackground = canChangeBackgroundColor(appState, targetElements);
+
+  if (!showStroke && !showBackground) {
+    return null;
+  }
+
+  return (
+    <div
+      className={clsx("toolbar-color-controls", {
+        "toolbar-color-controls--mobile": variant === "mobile",
+      })}
+      data-testid="toolbar-color-controls"
+    >
+      {showStroke && (
+        <div className="toolbar-color-controls__item">
+          {renderAction("changeStrokeColor")}
+        </div>
+      )}
+      {showBackground && (
+        <div className="toolbar-color-controls__item">
+          {renderAction("changeBackgroundColor")}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const SelectedShapeActions = ({
   appState,
   elementsMap,

@@ -31,6 +31,7 @@ import {
   SelectedShapeActions,
   ShapesSwitcher,
   CompactShapeActions,
+  ToolbarColorControls,
 } from "./Actions";
 import { LoadingMessage } from "./LoadingMessage";
 import { LockButton } from "./LockButton";
@@ -383,6 +384,14 @@ const LayerUI = ({
                               activeTool={appState.activeTool}
                               UIOptions={UIOptions}
                               app={app}
+                            />
+
+                            <div className="App-toolbar__divider" />
+
+                            <ToolbarColorControls
+                              appState={appState}
+                              elementsMap={app.scene.getNonDeletedElementsMap()}
+                              renderAction={actionManager.renderAction}
                             />
                           </Stack.Row>
                         </Island>
