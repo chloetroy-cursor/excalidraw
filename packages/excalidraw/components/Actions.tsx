@@ -162,12 +162,20 @@ export const ToolbarColorControls = ({
       data-testid="toolbar-color-controls"
     >
       {showStroke && (
-        <div className="toolbar-color-controls__item">
+        <div
+          className="toolbar-color-controls__item"
+          aria-label={t("labels.strokeColorPicker")}
+          title={t("labels.strokeColorPicker")}
+        >
           {renderAction("changeStrokeColor")}
         </div>
       )}
       {showBackground && (
-        <div className="toolbar-color-controls__item">
+        <div
+          className="toolbar-color-controls__item"
+          aria-label={t("labels.fillColorPicker")}
+          title={t("labels.fillColorPicker")}
+        >
           {renderAction("changeBackgroundColor")}
         </div>
       )}
