@@ -34,7 +34,7 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import { elementCenterPoint, getDiamondPoints } from "./bounds";
+import { elementCenterPoint, getDiamondPoints, getStarPoints } from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
@@ -53,6 +53,7 @@ import type {
   ExcalidrawArrowElement,
   ExcalidrawBindableElement,
   ExcalidrawDiamondElement,
+  ExcalidrawStarElement,
   ExcalidrawElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
@@ -460,6 +461,26 @@ export function deconstructDiamondElement(
   setElementShapesCacheEntry(element, shape, offset);
 
   return shape;
+}
+
+export function deconstructStarElement(
+  element: ExcalidrawStarElement,
+): LineSegment<GlobalPoint>[] {
+  const points = getStarPoints(element);
+  const sides: LineSegment<GlobalPoint>[] = [];
+
+  for (let i = 0; i < points.length; i++) {
+    const [x1, y1] = points[i];
+    const [x2, y2] = points[(i + 1) % points.length];
+    sides.push(
+      lineSegment(
+        pointFrom(element.x + x1, element.y + y1),
+        pointFrom(element.x + x2, element.y + y2),
+      ),
+    );
+  }
+
+  return sides;
 }
 
 // Checks if the first and last point are close enough

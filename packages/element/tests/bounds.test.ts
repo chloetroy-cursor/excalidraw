@@ -121,6 +121,24 @@ describe("getElementBounds", () => {
     expect(y2).toEqual(42.90569415042095);
   });
 
+  it("star", () => {
+    const element = _ce({
+      x: 40,
+      y: 30,
+      w: 20,
+      h: 10,
+      a: 0,
+      t: "star",
+    });
+
+    const [x1, y1, x2, y2] = getElementBounds(element, arrayToMap([element]));
+
+    expect(x1).toEqual(40.489434837048464);
+    expect(y1).toEqual(30);
+    expect(x2).toEqual(59.510565162951536);
+    expect(y2).toEqual(39.045084971874736);
+  });
+
   it("curved line", () => {
     const element = {
       ..._ce({

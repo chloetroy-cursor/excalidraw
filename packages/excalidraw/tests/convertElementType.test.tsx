@@ -43,4 +43,23 @@ describe("convert element type", () => {
     expect(h.elements[0].type).toBe("rectangle");
     expect(h.elements[0].roundness?.type).toBe(ROUNDNESS.ADAPTIVE_RADIUS);
   });
+
+  it("can convert generic shapes to star", () => {
+    const rectangle = API.createElement({
+      type: "rectangle",
+    });
+
+    API.setElements([rectangle]);
+    API.setSelectedElements([rectangle]);
+
+    act(() => {
+      convertElementTypes(h.app, {
+        conversionType: "generic",
+        nextType: "star",
+      });
+    });
+
+    expect(h.elements[0].type).toBe("star");
+    expect(h.elements[0].roundness).toBeNull();
+  });
 });

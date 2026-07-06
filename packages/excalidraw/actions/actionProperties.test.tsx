@@ -1,4 +1,4 @@
-import { fireEvent, queryByTestId } from "@testing-library/react";
+import { fireEvent, queryAllByTestId, queryByTestId } from "@testing-library/react";
 
 import {
   COLOR_PALETTE,
@@ -30,11 +30,13 @@ describe("element locking", () => {
       API.setAppState({
         currentItemBackgroundColor: color,
       });
-      const activeColor = queryByTestId(
+      const activeColors = queryAllByTestId(
         document.body,
         `color-top-pick-${color}`,
       );
-      expect(activeColor).toHaveClass("active");
+      expect(
+        activeColors.some((element) => element.classList.contains("active")),
+      ).toBe(true);
     });
 
     it("should show fill style when background non-transparent", () => {

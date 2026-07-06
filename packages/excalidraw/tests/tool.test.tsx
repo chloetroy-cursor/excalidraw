@@ -92,3 +92,31 @@ describe("getToolbarTools()", () => {
     expect(toolValues.filter((value) => value === "selection")).toHaveLength(0);
   });
 });
+
+describe("star toolbar tool", () => {
+  const getTools = () =>
+    getToolbarTools({
+      state: {
+        preferredSelectionTool: {
+          type: "selection",
+        },
+      },
+    } as AppClassProperties);
+
+  it("is placed between selection and rectangle", () => {
+    const toolValues = getTools().map((tool) => tool.value);
+    const selectionIndex = toolValues.indexOf("selection");
+    const starIndex = toolValues.indexOf("star");
+    const rectangleIndex = toolValues.indexOf("rectangle");
+
+    expect(starIndex).toBe(selectionIndex + 1);
+    expect(rectangleIndex).toBe(starIndex + 1);
+  });
+
+  it("has no keyboard shortcut", () => {
+    const star = getTools().find((tool) => tool.value === "star");
+
+    expect(star?.key).toBeNull();
+    expect(star?.numericKey).toBeNull();
+  });
+});

@@ -2524,9 +2524,13 @@ type Side =
   | "bottom-left"
   | "left"
   | "top-left";
-type ShapeType = "rectangle" | "ellipse" | "diamond";
+type ShapeType = "rectangle" | "ellipse" | "diamond" | "star";
 const getShapeType = (element: ExcalidrawBindableElement): ShapeType => {
-  if (element.type === "ellipse" || element.type === "diamond") {
+  if (
+    element.type === "ellipse" ||
+    element.type === "diamond" ||
+    element.type === "star"
+  ) {
     return element.type;
   }
   return "rectangle";
@@ -2568,6 +2572,18 @@ const SHAPE_CONFIGS: Record<ShapeType, SectorConfig[]> = {
 
   // ellipse: 15° cardinal points, 75° diagonals
   ellipse: [
+    { centerAngle: 0, sectorWidth: 15, side: "right" },
+    { centerAngle: 45, sectorWidth: 75, side: "bottom-right" },
+    { centerAngle: 90, sectorWidth: 15, side: "bottom" },
+    { centerAngle: 135, sectorWidth: 75, side: "bottom-left" },
+    { centerAngle: 180, sectorWidth: 15, side: "left" },
+    { centerAngle: 225, sectorWidth: 75, side: "top-left" },
+    { centerAngle: 270, sectorWidth: 15, side: "top" },
+    { centerAngle: 315, sectorWidth: 75, side: "top-right" },
+  ],
+
+  // star: reuse diamond sector layout for arrow binding
+  star: [
     { centerAngle: 0, sectorWidth: 15, side: "right" },
     { centerAngle: 45, sectorWidth: 75, side: "bottom-right" },
     { centerAngle: 90, sectorWidth: 15, side: "bottom" },

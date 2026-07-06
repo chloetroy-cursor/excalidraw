@@ -200,6 +200,17 @@ export class ElementBounds {
       const maxX = Math.max(x11, x12, x22, x21);
       const maxY = Math.max(y11, y12, y22, y21);
       bounds = [minX, minY, maxX, maxY];
+    } else if (element.type === "star") {
+      const starPoints = getStarPoints(element).map(([px, py]) =>
+        pointRotateRads(
+          pointFrom(element.x + px, element.y + py),
+          pointFrom(cx, cy),
+          element.angle,
+        ),
+      );
+      const xs = starPoints.map(([px]) => px);
+      const ys = starPoints.map(([, py]) => py);
+      bounds = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
     } else if (element.type === "ellipse") {
       const w = (x2 - x1) / 2;
       const h = (y2 - y1) / 2;
@@ -532,6 +543,26 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   const leftY = rightY;
 
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
+};
+
+export const getStarPoints = (element: ExcalidrawElement) => {
+  const cx = element.width / 2;
+  const cy = element.height / 2;
+  const outerRadiusX = Math.max(element.width / 2, 1);
+  const outerRadiusY = Math.max(element.height / 2, 1);
+  const innerRadiusX = outerRadiusX * 0.382;
+  const innerRadiusY = outerRadiusY * 0.382;
+  const points: [number, number][] = [];
+
+  for (let i = 0; i < 10; i++) {
+    const angle = -Math.PI / 2 + (i * Math.PI) / 5;
+    const isOuter = i % 2 === 0;
+    const rx = isOuter ? outerRadiusX : innerRadiusX;
+    const ry = isOuter ? outerRadiusY : innerRadiusY;
+    points.push([cx + rx * Math.cos(angle), cy + ry * Math.sin(angle)]);
+  }
+
+  return points;
 };
 
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes
