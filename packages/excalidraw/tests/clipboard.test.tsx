@@ -213,6 +213,62 @@ describe("paste text as a single element", () => {
   });
 });
 
+describe("paste CSV as table", () => {
+  it("should render a grid of bound-text rectangles when pasting a CSV", async () => {
+    const csv = "Name,Role,City\nAlice,Engineer,NYC\nBob,Designer,SF";
+    pasteWithCtrlCmdV(csv);
+
+    await waitFor(() => {
+      // 3 rows x 3 cols = 9 cells, each a rectangle + bound text = 18 elements
+      const rectangles = h.elements.filter((el) => el.type === "rectangle");
+      const texts = h.elements.filter((el) => el.type === "text");
+      expect(rectangles.length).toEqual(9);
+      expect(texts.length).toEqual(9);
+
+      // every text is bound to a container (i.e. lives inside a cell)
+      expect(texts.every((el) => !!(el as any).containerId)).toBe(true);
+
+      // the pasted values are preserved across the cells
+      const values = texts.map((el) => (el as any).originalText).sort();
+      expect(values).toEqual(
+        [
+          "Name",
+          "Role",
+          "City",
+          "Alice",
+          "Engineer",
+          "NYC",
+          "Bob",
+          "Designer",
+          "SF",
+        ].sort(),
+      );
+    });
+  });
+
+  it("should paste CSV as plain text (not a table) with Ctrl/Cmd+Shift+V", async () => {
+    const csv = "Name,Role\nAlice,Engineer";
+    pasteWithCtrlCmdShiftV(csv);
+
+    await waitFor(() => {
+      expect(h.elements.length).toEqual(1);
+      expect(h.elements[0].type).toEqual("text");
+    });
+  });
+
+  it("should not treat ordinary prose as a table", async () => {
+    // inconsistent column counts across lines -> not a grid
+    const text = "Hello, world, this is a sentence\nGoodbye";
+    pasteWithCtrlCmdV(text);
+
+    await waitFor(() => {
+      expect(h.elements.length).toBeGreaterThan(0);
+      expect(h.elements.every((el) => el.type === "text")).toBe(true);
+      expect(h.elements.some((el) => el.type === "rectangle")).toBe(false);
+    });
+  });
+});
+
 describe("Paste bound text container", () => {
   const container = {
     type: "ellipse",

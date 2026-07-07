@@ -389,6 +389,7 @@ import {
 } from "../data/blob";
 
 import { fileOpen } from "../data/filesystem";
+import { tryParseTable, tableToExcalidrawSkeletons } from "../data/table";
 import {
   showHyperlinkTooltip,
   hideHyperlinkToolip,
@@ -3741,6 +3742,15 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
 
+    // ------------------- CSV / tabular text -> table -------------------
+    if (!isPlainPaste && data.text) {
+      const table = tryParseTable(data.text);
+      if (table.ok) {
+        this.addTableFromPaste(table.rows, sceneX, sceneY);
+        return;
+      }
+    }
+
     // ------------------- Images or SVG code -------------------
     const imageFiles = dataTransferFiles.map((data) => data.file);
 
@@ -4238,6 +4248,36 @@ class App extends React.Component<AppProps, AppState> {
       });
       PLAIN_PASTE_TOAST_SHOWN = true;
     }
+  }
+
+  private addTableFromPaste(
+    rows: string[][],
+    sceneX: number,
+    sceneY: number,
+  ) {
+    const skeletons = tableToExcalidrawSkeletons(rows, {
+      x: sceneX,
+      y: sceneY,
+      fontSize: this.state.currentItemFontSize,
+      fontFamily: this.state.currentItemFontFamily,
+      strokeColor: this.state.currentItemStrokeColor,
+      headerBackgroundColor: "#f1f3f5",
+    });
+
+    const elements = convertToExcalidrawElements(skeletons, {
+      regenerateIds: true,
+    });
+
+    if (!elements.length) {
+      return;
+    }
+
+    this.addElementsFromPasteOrLibrary({
+      elements,
+      files: null,
+      position:
+        this.editorInterface.formFactor === "desktop" ? "cursor" : "center",
+    });
   }
 
   setAppState: React.Component<any, AppState>["setState"] = (
