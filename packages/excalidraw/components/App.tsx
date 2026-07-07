@@ -4250,11 +4250,7 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private addTableFromPaste(
-    rows: string[][],
-    sceneX: number,
-    sceneY: number,
-  ) {
+  private addTableFromPaste(rows: string[][], sceneX: number, sceneY: number) {
     const skeletons = tableToExcalidrawSkeletons(rows, {
       x: sceneX,
       y: sceneY,
