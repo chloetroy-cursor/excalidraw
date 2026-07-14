@@ -57,6 +57,12 @@ describe("element locking", () => {
       });
       const solidFillStyle = queryByTestId(document.body, `fill-solid`);
       expect(solidFillStyle).toHaveClass("active");
+
+      API.setAppState({
+        currentItemFillStyle: "dots",
+      });
+      const dotsFillStyle = queryByTestId(document.body, `fill-dots`);
+      expect(dotsFillStyle).toHaveClass("active");
     });
 
     it("should not show fill style when background transparent", () => {
@@ -95,6 +101,23 @@ describe("element locking", () => {
 
       const crossHatchButton = queryByTestId(document.body, `fill-cross-hatch`);
       expect(crossHatchButton).toHaveClass("active");
+    });
+
+    it("should apply dots fill style when the dots button is clicked", () => {
+      const rect = API.createElement({
+        type: "rectangle",
+        backgroundColor: "red",
+        fillStyle: "hachure",
+      });
+      API.setElements([rect]);
+      API.setSelectedElements([rect]);
+
+      const dotsButton = queryByTestId(document.body, `fill-dots`);
+      expect(dotsButton).not.toBe(null);
+      fireEvent.click(dotsButton!);
+
+      expect(API.getSelectedElements()[0].fillStyle).toBe("dots");
+      expect(queryByTestId(document.body, `fill-dots`)).toHaveClass("active");
     });
 
     it("should not show fill style selected element's background is transparent", () => {

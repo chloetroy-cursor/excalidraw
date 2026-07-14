@@ -670,6 +670,18 @@ describe("restoreElements", () => {
     });
   });
 
+  it("should preserve the dots fill style on restore", () => {
+    const element = API.createElement({
+      type: "rectangle",
+      fillStyle: "dots",
+      backgroundColor: "blue",
+    });
+
+    const restoredElements = restore.restoreElements([element], null);
+
+    expect(restoredElements[0].fillStyle).toBe("dots");
+  });
+
   it("bump versions of local duplicate elements when supplied", () => {
     const rectangle = API.createElement({ type: "rectangle" }); // version=1
     const ellipse = API.createElement({ type: "ellipse" });
