@@ -57,6 +57,29 @@ describe("element locking", () => {
       });
       const solidFillStyle = queryByTestId(document.body, `fill-solid`);
       expect(solidFillStyle).toHaveClass("active");
+
+      API.setAppState({
+        currentItemFillStyle: "zigzag",
+      });
+      const zigzagFillStyle = queryByTestId(document.body, `fill-zigzag`);
+      expect(zigzagFillStyle).toHaveClass("active");
+    });
+
+    it("should change fill style to zigzag when the zigzag button is clicked", () => {
+      UI.clickTool("rectangle");
+
+      const color = DEFAULT_ELEMENT_BACKGROUND_PICKS[1];
+
+      API.setAppState({
+        currentItemBackgroundColor: color,
+        currentItemFillStyle: "hachure",
+      });
+
+      const zigzagFillButton = queryByTestId(document.body, `fill-zigzag`);
+      expect(zigzagFillButton).not.toBe(null);
+
+      fireEvent.click(zigzagFillButton!);
+      expect(window.h.state.currentItemFillStyle).toBe("zigzag");
     });
 
     it("should not show fill style when background transparent", () => {
