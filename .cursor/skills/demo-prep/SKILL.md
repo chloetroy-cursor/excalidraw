@@ -18,6 +18,8 @@ Verify the repo is in a demo-ready state before a customer call. Everything here
 
 ## Demo inventory (what exists to demo with)
 
+- `demos/CHEATSHEET.md` — the demoer's script: copy-paste prompts per mode (Ask/Plan/Build/Debug/Multi-task/Parallel), talk tracks, and story arcs. Point the user here if they ask "what do I type".
+
 - `adding-excalidraw-shape` skill — full recipe for the "agent builds a feature" demo (star/hexagon/triangle shape tool).
 - `commit-writer` skill — conventional commits with EC ticket IDs.
 - `scripts/br.sh` — ticket-based branch creation (`./scripts/br.sh ec-12 add star shape`).
