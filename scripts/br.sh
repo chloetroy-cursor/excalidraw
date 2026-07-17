@@ -13,12 +13,12 @@ usage() {
 Create a new branch off an up-to-date master.
 
 Usage:
-  br <ticket> <slug words>                 feat/exc-11-add-star-shape-07/06/2026
-  br <type> <ticket> <slug words>          fix/exc-3-crash-on-export-07/06/2026
-  br <type>/<ticket>-<slug>                feat/exc-11-add-star-shape-07/06/2026
+  br <ticket> <slug words>                 feat/ec-11-add-star-shape-07/06/2026
+  br <type> <ticket> <slug words>          fix/ec-3-crash-on-export-07/06/2026
+  br <type>/<ticket>-<slug>                feat/ec-11-add-star-shape-07/06/2026
 
 Arguments:
-  ticket    Ticket id (exc-11) or number (11 -> exc-11)
+  ticket    Ticket id (ec-11) or number (11 -> ec-11)
   slug      Short description (words are joined with hyphens)
 
 Options:
@@ -30,9 +30,9 @@ Options:
   -h, --help        Show this help
 
 Examples:
-  br exc-11 add star shape
-  br fix exc-3 crash on export
-  br feat/exc-11-add-star-shape
+  br ec-11 add star shape
+  br fix ec-3 crash on export
+  br feat/ec-11-add-star-shape
 EOF
 }
 
@@ -49,19 +49,19 @@ slugify() {
 
 normalize_ticket() {
   local ticket="$1"
-  if [[ "$ticket" =~ ^[Ee][Xx][Cc]-[0-9]+$ ]]; then
+  if [[ "$ticket" =~ ^[Ee][Cc]-[0-9]+$ ]]; then
     echo "$ticket" | tr '[:upper:]' '[:lower:]'
     return
   fi
   if [[ "$ticket" =~ ^[0-9]+$ ]]; then
-    echo "exc-${ticket}"
+    echo "ec-${ticket}"
     return
   fi
-  die "ticket must look like exc-11 or 11 (got: $ticket)"
+  die "ticket must look like ec-11 or 11 (got: $ticket)"
 }
 
 looks_like_ticket() {
-  [[ "$1" =~ ^[Ee][Xx][Cc]-[0-9]+$ || "$1" =~ ^[0-9]+$ ]]
+  [[ "$1" =~ ^[Ee][Cc]-[0-9]+$ || "$1" =~ ^[0-9]+$ ]]
 }
 
 append_date_suffix() {
@@ -85,8 +85,8 @@ build_branch_name() {
 
 parse_full_branch() {
   local value="$1"
-  if [[ ! "$value" =~ ^([a-z][a-z0-9-]*)\/(exc-[0-9]+)-(.+)$ ]]; then
-    die "branch must look like feat/exc-11-add-star-shape (got: $value)"
+  if [[ ! "$value" =~ ^([a-z][a-z0-9-]*)\/(ec-[0-9]+)-(.+)$ ]]; then
+    die "branch must look like feat/ec-11-add-star-shape (got: $value)"
   fi
   append_date_suffix "$value"
 }

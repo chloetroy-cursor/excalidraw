@@ -16,16 +16,18 @@ Write clean, consistent commit messages for this repo, then commit (and push if 
 - **type** — one of: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`
 - **scope** — the area of the codebase touched, e.g. `editor`, `toolbar`, `geometry`, `tests`
 - **summary** — imperative mood, lowercase, no trailing period, under 60 characters ("add star shape tool", not "Added star shape tool.")
-- **TICKET** — the JIRA ticket ID in caps, e.g. `EXC-12`
+- **TICKET** — the Jira ticket ID in caps from the `EC` project ("Excalidraw Canvas" on chloe-fe-demo.atlassian.net), e.g. `EC-12`
 
-Example: `feat(editor): add star shape tool and element type (EXC-12)`
+Example: `feat(editor): add star shape tool and element type (EC-12)`
 
 ## Steps
 
 1. Run `git status` and `git diff --stat` to see what changed.
 2. Determine the ticket ID from the current branch name (branches look like
-   `feat/exc-12-add-star-shape-07/06/2026` → ticket is `EXC-12`). If no ticket
-   is present in the branch name, ask the user for one.
+   `feat/ec-12-add-star-shape-07/06/2026` → ticket is `EC-12`). If no ticket
+   is present in the branch name, look it up in the `EC` Jira project via the
+   Atlassian MCP (cloudId `12ae6c59-1802-485b-8408-fa4fbb703d2c`), or ask the
+   user for one.
 3. Pick the `type` from the dominant kind of change; pick the `scope` from the
    directory or feature most files belong to.
 4. If the change set spans unrelated concerns (e.g. a feature plus an
