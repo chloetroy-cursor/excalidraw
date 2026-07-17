@@ -18,7 +18,7 @@ Return this repo (and its demo Jira project) to the exact state a demo should st
    ```
 
    The script prints its plan and asks for confirmation. It hard-resets `master` to `origin/master`, cleans untracked files (keeping `node_modules` and `.env*`), removes extra worktrees, and deletes all non-master branches. It never touches stashes.
-3. **Clean up Jira** (project `EC` on `chloe-fe-demo.atlassian.net`, cloudId `12ae6c59-1802-485b-8408-fa4fbb703d2c`): any issues created live during the demo should be transitioned back to "To Do" or noted for manual deletion. The standing demo tickets (EC-1 zigzag fill, EC-2 star fill) stay in "To Do" — move them back if the demo transitioned them.
+3. **Clean up Jira** (project `EC` on `chloe-fe-demo.atlassian.net`, cloudId `12ae6c59-1802-485b-8408-fa4fbb703d2c`): any issues created live during the demo should be transitioned back to "To Do" or noted for manual deletion. The standing demo tickets (EC-1 zigzag fill, EC-2 star fill, EC-3 star shape tool) stay in "To Do" — move them back if the demo transitioned them.
 4. **Verify**: `git status` shows a clean tree on `master`, `git branch -a` shows only master, and `yarn start` still boots the app on http://localhost:3001.
 
 ## Rules
