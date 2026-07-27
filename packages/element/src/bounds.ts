@@ -45,6 +45,7 @@ import {
 import { getElementShape } from "./shape";
 import {
   deconstructDiamondElement,
+  deconstructStarElement,
   deconstructRectanguloidElement,
 } from "./utils";
 import { intersectElementWithLineSegment } from "./collision";
@@ -200,6 +201,21 @@ export class ElementBounds {
       const maxX = Math.max(x11, x12, x22, x21);
       const maxY = Math.max(y11, y12, y22, y21);
       bounds = [minX, minY, maxX, maxY];
+    } else if (element.type === "star") {
+      const starPoints = getStarPoints(element);
+      const rotated = starPoints.map(([px, py]) =>
+        pointRotateRads(
+          pointFrom(element.x + px, element.y + py),
+          pointFrom(cx, cy),
+          element.angle,
+        ),
+      );
+      bounds = [
+        Math.min(...rotated.map((p) => p[0])),
+        Math.min(...rotated.map((p) => p[1])),
+        Math.max(...rotated.map((p) => p[0])),
+        Math.max(...rotated.map((p) => p[1])),
+      ];
     } else if (element.type === "ellipse") {
       const w = (x2 - x1) / 2;
       const h = (y2 - y1) / 2;
@@ -366,6 +382,9 @@ export const getElementLineSegments = (
     const rotatedSides = getRotatedSides(sides, center, element.angle);
 
     return [...rotatedSides, ...cornerSegments];
+  } else if (element.type === "star") {
+    const [sides] = deconstructStarElement(element);
+    return getRotatedSides(sides, center, element.angle);
   } else if (shape.type === "polygon") {
     if (isTextElement(element)) {
       const container = getContainerElement(element, elementsMap);
@@ -532,6 +551,34 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   const leftY = rightY;
 
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
+};
+
+/**
+ * Returns the 10 vertices of a 5-pointed star in local element coordinates
+ * (relative to element.x / element.y), alternating outer and inner tips,
+ * starting from the top tip and going clockwise.
+ */
+export const getStarPoints = (
+  element: Pick<ExcalidrawElement, "width" | "height">,
+): [number, number][] => {
+  const cx = element.width / 2;
+  const cy = element.height / 2;
+  // Avoid zero radii so rough.js doesn't throw
+  const outerRx = Math.max(Math.abs(element.width) / 2, 1);
+  const outerRy = Math.max(Math.abs(element.height) / 2, 1);
+  // ~1/golden-ratio yields a classic 5-pointed star
+  const innerRatio = 0.382;
+  const innerRx = outerRx * innerRatio;
+  const innerRy = outerRy * innerRatio;
+
+  const points: [number, number][] = [];
+  for (let i = 0; i < 10; i++) {
+    const angle = -Math.PI / 2 + (i * Math.PI) / 5;
+    const rx = i % 2 === 0 ? outerRx : innerRx;
+    const ry = i % 2 === 0 ? outerRy : innerRy;
+    points.push([cx + rx * Math.cos(angle), cy + ry * Math.sin(angle)]);
+  }
+  return points;
 };
 
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes

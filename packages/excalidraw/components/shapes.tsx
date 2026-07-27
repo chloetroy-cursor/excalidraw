@@ -4,6 +4,7 @@ import {
   SelectionIcon,
   RectangleIcon,
   DiamondIcon,
+  StarIcon,
   EllipseIcon,
   ArrowIcon,
   LineIcon,
@@ -47,6 +48,16 @@ export const SHAPES = [
     value: "diamond",
     key: KEYS.D,
     numericKey: KEYS["3"],
+    fillable: true,
+    toolbar: true,
+  },
+  {
+    icon: StarIcon,
+    value: "star",
+    // S opens stroke color when not claimed by a tool; leave unbound to avoid
+    // stealing that shortcut. Star is selected from the toolbar.
+    key: null,
+    numericKey: null,
     fillable: true,
     toolbar: true,
   },

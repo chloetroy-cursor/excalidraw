@@ -22,6 +22,7 @@ import {
 
 import {
   deconstructDiamondElement,
+  deconstructStarElement,
   deconstructRectanguloidElement,
   elementCenterPoint,
   getDiamondBaseCorners,
@@ -365,6 +366,27 @@ const renderBindingHighlightForBindableElement_simple = (
           }
 
           break;
+        case "star":
+          {
+            const [segments] = deconstructStarElement(
+              suggestedBinding.element,
+            );
+
+            segments.forEach((segment) => {
+              context.beginPath();
+              context.moveTo(
+                segment[0][0] - suggestedBinding.element.x,
+                segment[0][1] - suggestedBinding.element.y,
+              );
+              context.lineTo(
+                segment[1][0] - suggestedBinding.element.x,
+                segment[1][1] - suggestedBinding.element.y,
+              );
+              context.stroke();
+            });
+          }
+
+          break;
         default:
           {
             const [segments, curves] = deconstructRectanguloidElement(
@@ -461,6 +483,19 @@ const renderBindingHighlightForBindableElement_simple = (
             return pointFrom<GlobalPoint>(rotatedPoint[0], rotatedPoint[1]);
           },
         );
+      } else if (suggestedBinding.element.type === "star") {
+        const center = elementCenterPoint(
+          suggestedBinding.element,
+          elementsMap,
+        );
+        const [sides] = deconstructStarElement(suggestedBinding.element);
+        midpoints = sides.map((side) => {
+          const mid = pointFrom<GlobalPoint>(
+            (side[0][0] + side[1][0]) / 2,
+            (side[0][1] + side[1][1]) / 2,
+          );
+          return pointRotateRads(mid, center, suggestedBinding.element.angle);
+        });
       } else {
         const basePoints = [
           {
@@ -707,6 +742,25 @@ const renderBindingHighlightForBindableElement_complex = (
           }
 
           break;
+        case "star":
+          {
+            const [segments] = deconstructStarElement(element, offset);
+
+            segments.forEach((segment) => {
+              context.beginPath();
+              context.moveTo(
+                segment[0][0] - element.x + offset,
+                segment[0][1] - element.y + offset,
+              );
+              context.lineTo(
+                segment[1][0] - element.x + offset,
+                segment[1][1] - element.y + offset,
+              );
+              context.stroke();
+            });
+          }
+
+          break;
         default:
           {
             const [segments, curves] = deconstructRectanguloidElement(
@@ -827,6 +881,21 @@ const renderBindingHighlightForBindableElement_complex = (
         midpoints = curves.map((curve) => {
           const point = bezierEquation(curve, 0.5);
           const rotatedPoint = pointRotateRads(point, center, element.angle);
+          return {
+            x: rotatedPoint[0] - element.x,
+            y: rotatedPoint[1] - element.y,
+          };
+        });
+      } else if (element.type === "star") {
+        const [sides] = deconstructStarElement(element);
+        const center = elementCenterPoint(element, allElementsMap);
+
+        midpoints = sides.map((side) => {
+          const mid = pointFrom<GlobalPoint>(
+            (side[0][0] + side[1][0]) / 2,
+            (side[0][1] + side[1][1]) / 2,
+          );
+          const rotatedPoint = pointRotateRads(mid, center, element.angle);
           return {
             x: rotatedPoint[0] - element.x,
             y: rotatedPoint[1] - element.y,

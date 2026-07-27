@@ -54,17 +54,17 @@ import {
   isIframeLikeElement,
   isLinearElement,
 } from "./typeChecks";
-import { getCornerRadius, isPathALoop } from "./utils";
 import { headingForPointIsHorizontal } from "./heading";
-
 import { canChangeRoundness } from "./comparisons";
 import {
   elementCenterPoint,
   getArrowheadPoints,
   getDiamondPoints,
+  getStarPoints,
   getElementAbsoluteCoords,
 } from "./bounds";
 import { shouldTestInside } from "./collision";
+import { getCornerRadius, isPathALoop } from "./utils";
 
 import type {
   ExcalidrawElement,
@@ -230,6 +230,7 @@ export const generateRoughOptions = (
     case "iframe":
     case "embeddable":
     case "diamond":
+    case "star":
     case "ellipse": {
       options.fillStyle = element.fillStyle;
       options.fill = isTransparent(element.backgroundColor)
@@ -860,6 +861,13 @@ const _generateElementShape = (
       }
       return shape;
     }
+    case "star": {
+      const shape: ElementShapes[typeof element.type] = generator.polygon(
+        getStarPoints(element),
+        generateRoughOptions(element, false, isDarkMode),
+      );
+      return shape;
+    }
     case "ellipse": {
       const shape: ElementShapes[typeof element.type] = generator.ellipse(
         element.width / 2,
@@ -1075,6 +1083,7 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
   switch (element.type) {
     case "rectangle":
     case "diamond":
+    case "star":
     case "frame":
     case "magicframe":
     case "embeddable":
