@@ -506,10 +506,7 @@ export function deconstructStarElement(
   const sides: LineSegment<GlobalPoint>[] = [];
   for (let i = 0; i < globalPoints.length; i++) {
     sides.push(
-      lineSegment(
-        globalPoints[i],
-        globalPoints[(i + 1) % globalPoints.length],
-      ),
+      lineSegment(globalPoints[i], globalPoints[(i + 1) % globalPoints.length]),
     );
   }
 

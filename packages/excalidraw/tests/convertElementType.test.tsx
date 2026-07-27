@@ -36,6 +36,15 @@ describe("convert element type", () => {
     act(() => {
       convertElementTypes(h.app, {
         conversionType: "generic",
+        nextType: "star",
+      });
+    });
+
+    expect(h.elements[0].type).toBe("star");
+
+    act(() => {
+      convertElementTypes(h.app, {
+        conversionType: "generic",
         nextType: "rectangle",
       });
     });

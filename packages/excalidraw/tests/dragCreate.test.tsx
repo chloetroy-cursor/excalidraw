@@ -139,6 +139,40 @@ describe("Test dragCreate", () => {
       h.elements.forEach((element) => expect(element).toMatchSnapshot());
     });
 
+    it("star", async () => {
+      const { getByToolName, container } = await render(<Excalidraw />);
+      // select tool
+      const tool = getByToolName("star");
+      fireEvent.click(tool);
+
+      const canvas = container.querySelector("canvas.interactive")!;
+
+      // start from (30, 20)
+      fireEvent.pointerDown(canvas, { clientX: 30, clientY: 20 });
+
+      // move to (60,70)
+      fireEvent.pointerMove(canvas, { clientX: 60, clientY: 70 });
+
+      // finish (position does not matter)
+      fireEvent.pointerUp(canvas);
+
+      expect(renderInteractiveScene.mock.calls.length).toMatchInlineSnapshot(
+        `5`,
+      );
+      expect(renderStaticScene.mock.calls.length).toMatchInlineSnapshot(`5`);
+      expect(h.state.selectionElement).toBeNull();
+
+      expect(h.elements.length).toEqual(1);
+      expect(h.elements[0].type).toEqual("star");
+      expect(h.elements[0].x).toEqual(30);
+      expect(h.elements[0].y).toEqual(20);
+      expect(h.elements[0].width).toEqual(30); // 60 - 30
+      expect(h.elements[0].height).toEqual(50); // 70 - 20
+
+      expect(h.elements.length).toMatchSnapshot();
+      h.elements.forEach((element) => expect(element).toMatchSnapshot());
+    });
+
     it("arrow", async () => {
       const { getByToolName, container } = await render(<Excalidraw />);
       // select tool

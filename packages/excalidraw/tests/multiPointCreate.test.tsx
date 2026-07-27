@@ -89,6 +89,21 @@ describe("remove shape in non linear elements", () => {
     expect(renderStaticScene.mock.calls.length).toMatchInlineSnapshot(`5`);
     expect(h.elements.length).toEqual(0);
   });
+
+  it("star", async () => {
+    const { getByToolName, container } = await render(<Excalidraw />);
+    // select tool
+    const tool = getByToolName("star");
+    fireEvent.click(tool);
+
+    const canvas = container.querySelector("canvas.interactive")!;
+    fireEvent.pointerDown(canvas, { clientX: 30, clientY: 20 });
+    fireEvent.pointerUp(canvas, { clientX: 30, clientY: 30 });
+
+    expect(renderInteractiveScene.mock.calls.length).toMatchInlineSnapshot(`5`);
+    expect(renderStaticScene.mock.calls.length).toMatchInlineSnapshot(`5`);
+    expect(h.elements.length).toEqual(0);
+  });
 });
 
 describe("multi point mode in linear elements", () => {

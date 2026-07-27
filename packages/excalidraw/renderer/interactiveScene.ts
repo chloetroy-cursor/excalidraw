@@ -368,9 +368,7 @@ const renderBindingHighlightForBindableElement_simple = (
           break;
         case "star":
           {
-            const [segments] = deconstructStarElement(
-              suggestedBinding.element,
-            );
+            const [segments] = deconstructStarElement(suggestedBinding.element);
 
             segments.forEach((segment) => {
               context.beginPath();
