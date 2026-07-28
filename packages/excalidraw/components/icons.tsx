@@ -1151,6 +1151,29 @@ export const FillSolidIcon = createIcon(
   { ...modifiedTablerIconProps, fill: "currentColor" },
 );
 
+export const FillStarIcon = createIcon(
+  <>
+    <path
+      d="M5.879 2.625h8.242a3.254 3.254 0 0 1 3.254 3.254v8.242a3.254 3.254 0 0 1-3.254 3.254H5.88a3.254 3.254 0 0 1-3.254-3.254V5.88a3.254 3.254 0 0 1 3.254-3.254Z"
+      stroke="currentColor"
+      strokeWidth="1.25"
+    />
+    <path
+      d="M10 6.2l.75 1.5 1.65.25-1.2 1.15.3 1.65L10 9.55 8.4 10.75l.3-1.65-1.2-1.15 1.65-.25L10 6.2Z"
+      fill="currentColor"
+    />
+    <path
+      d="M6.2 13.1l.45.9 1 .15-.75.7.15.95-.85-.45-.85.45.15-.95-.75-.7 1-.15.45-.9Z"
+      fill="currentColor"
+    />
+    <path
+      d="M13.8 13.1l.45.9 1 .15-.75.7.15.95-.85-.45-.85.45.15-.95-.75-.7 1-.15.45-.9Z"
+      fill="currentColor"
+    />
+  </>,
+  modifiedTablerIconProps,
+);
+
 export const StrokeWidthBaseIcon = createIcon(
   <>
     <path

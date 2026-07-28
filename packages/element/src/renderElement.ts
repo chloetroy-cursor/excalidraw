@@ -67,6 +67,7 @@ import { getContainingFrame } from "./frame";
 import { getCornerRadius } from "./utils";
 
 import { ShapeCache } from "./shape";
+import { maybeDrawStarFill } from "./starFillPattern";
 
 import type {
   ExcalidrawElement,
@@ -400,6 +401,14 @@ const drawElementOnCanvas = (
       context.lineCap = "round";
 
       rc.draw(ShapeCache.generateElementShape(element, renderConfig));
+      maybeDrawStarFill(
+        element,
+        context,
+        applyDarkModeFilter(
+          element.backgroundColor,
+          renderConfig.theme === THEME.DARK,
+        ),
+      );
       break;
     }
     case "arrow":
