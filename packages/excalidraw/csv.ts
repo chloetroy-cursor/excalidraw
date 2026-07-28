@@ -5,6 +5,7 @@ import {
   VERTICAL_ALIGN,
   randomId,
 } from "@excalidraw/common";
+
 import type { ExcalidrawElementSkeleton } from "@excalidraw/element";
 
 const CELL_HEIGHT = 48;
