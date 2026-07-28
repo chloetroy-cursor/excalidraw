@@ -1,5 +1,6 @@
 import { isTextElement } from "@excalidraw/element";
 import { convertToExcalidrawElements } from "@excalidraw/element";
+import type { ExcalidrawTextElement } from "@excalidraw/element/types";
 
 import { createTableElements, parseCSV } from "./csv";
 
@@ -44,7 +45,9 @@ describe("CSV", () => {
       const rectangles = elements.filter(
         (element) => element.type === "rectangle",
       );
-      const labels = elements.filter(isTextElement);
+      const labels = elements.filter(
+        (element): element is ExcalidrawTextElement => isTextElement(element),
+      );
 
       expect(rectangles).toHaveLength(4);
       expect(labels).toHaveLength(4);
