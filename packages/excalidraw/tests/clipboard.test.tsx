@@ -124,6 +124,45 @@ describe("general paste behavior", () => {
   });
 });
 
+describe("CSV paste", () => {
+  it("renders CSV as a grouped table with bound text", async () => {
+    mouse.moveTo(200, 200);
+    pasteWithCtrlCmdV("Name,Role\nAda,Engineer\nGrace,Admiral");
+
+    await waitFor(() => {
+      const rectangles = h.elements.filter(
+        (element) => element.type === "rectangle",
+      );
+      const labels = h.elements.filter((element) => element.type === "text");
+
+      expect(rectangles).toHaveLength(6);
+      expect(labels).toHaveLength(6);
+      expect(
+        new Set(rectangles.flatMap((element) => element.groupIds)).size,
+      ).toBe(1);
+      expect(labels.map((element) => element.text)).toEqual([
+        "Name",
+        "Role",
+        "Ada",
+        "Engineer",
+        "Grace",
+        "Admiral",
+      ]);
+      expect(labels.every((element) => element.containerId)).toBe(true);
+      expect(h.state.openDialog).toBeNull();
+    });
+  });
+
+  it("keeps CSV as plain text when using plain paste", async () => {
+    pasteWithCtrlCmdShiftV("Name,Role\nAda,Engineer");
+
+    await waitFor(() => {
+      expect(h.elements).toHaveLength(1);
+      expect(h.elements[0].type).toBe("text");
+    });
+  });
+});
+
 describe("paste text as single lines", () => {
   it("should create an element for each line when copying with Ctrl/Cmd+V", async () => {
     const text = "sajgfakfn\naaksfnknas\nakefnkasf";
