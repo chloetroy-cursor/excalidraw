@@ -24,16 +24,16 @@ Run the `demo-prep` skill first: clean `master`, app boots, typecheck passes, an
 ## Launch mechanisms (pick per audience)
 
 1. **Cursor UI tabs (best on camera).** Open one agent tab per ticket and paste the prompts below. The audience watches both work simultaneously.
-2. **Single-chat orchestration.** One agent launches parallel subagents in isolated git worktrees (best-of-n-runner style), each on its own branch, and reports back. Shows agent-orchestrated parallelism.
+2. **Single-chat orchestration.** One agent launches parallel subagents in isolated git worktrees (best-of-n-runner style), each on its own branch, and reports back. Record the root checkout's branch before launch and verify it never changes while the subagents run. When the runner already supplies an isolated worktree and branch, agents must not call `./scripts/br.sh` because that can switch the live root checkout. Shows agent-orchestrated parallelism.
 3. **Cloud agents.** Kick off from the ticket, check results later. Good for the "delegate and move on" narrative.
 
 ## Agent prompts (copy-paste ready)
 
-Each agent must work on its own branch created with `./scripts/br.sh` and commit using the `commit-writer` skill. Branches stay local during the demo.
+Each agent must work on its own branch and commit using the `commit-writer` skill. For Cursor UI tabs, create it with `./scripts/br.sh`. For isolated-worktree runners, use the runner-provided branch and do not call `./scripts/br.sh`. Branches stay local during the demo.
 
 **Agent A (EC-1, zigzag fill option):**
 
-> Work Jira ticket EC-1: expose the "Zigzag" fill style as a visible option in Excalidraw's element properties panel. Create a branch with `./scripts/br.sh 1 expose zigzag fill`. Note: the engine already supports zigzag — `FillStyle` in `packages/element/src/types.ts` includes `"zigzag"`, and it's currently a hidden alt-click easter egg on the hachure button in `actionChangeFillStyle` (`packages/excalidraw/actions/actionProperties.tsx`). Promote it to a first-class option in that RadioSelection (icon in `icons.tsx`, label in `locales/en.json`), and remove the alt-click hack. Verify with `yarn test:typecheck` and by drawing a filled rectangle. Commit with the commit-writer skill.
+> Work Jira ticket EC-1: expose the "Zigzag" fill style as a visible option in Excalidraw's element properties panel. In a normal checkout, create a branch with `./scripts/br.sh 1 expose zigzag fill`; in an isolated runner, stay on its provided branch and do not run the branch script. Note: the engine already supports zigzag — `FillStyle` in `packages/element/src/types.ts` includes `"zigzag"`, and it's currently a hidden alt-click easter egg on the hachure button in `actionChangeFillStyle` (`packages/excalidraw/actions/actionProperties.tsx`). Promote it to a first-class `RadioSelection` option with `value: "zigzag"` and `testId: "fill-zigzag"` (icon in `icons.tsx`, label in `locales/en.json`), and remove the alt-click hack. Add a focused UI test that fails unless `fill-zigzag` is rendered as its own visible button and clicking it without modifier keys applies the Zigzag fill. Verify with `yarn test:typecheck`, the focused test, and by drawing a non-transparent filled rectangle and selecting Zigzag directly. Commit with the commit-writer skill.
 
 **Agent B (EC-3, star shape tool):**
 
@@ -48,10 +48,11 @@ Each agent must work on its own branch created with `./scripts/br.sh` and commit
 ## Review and merge finale
 
 1. When agents finish, transition their tickets to "In Review"/"Done" in Jira (nice on-camera moment via the Atlassian MCP).
-2. For each branch: review the diff (`git diff master...<branch>`), run `yarn test:typecheck`, and spot-check in the running app (`yarn start`, port 3001).
+2. For each branch: review the diff (`git diff master...<branch>`) and run `yarn test:typecheck` plus its focused tests. A committed subagent branch is not yet visible in the app running from the root checkout; do not report the feature as available until it is integrated there.
 3. Merge into local `master` one branch at a time. In the clean pairing both merges are automatic; in the conflict pairing, let the agent resolve the `actionProperties.tsx` conflict live and explain the resolution.
-4. After all merges: final `yarn test:typecheck`, draw one canvas using every new feature as the closing shot.
-5. **Do not push demo merges to origin** unless the user explicitly wants to keep them.
+4. Confirm the dev server on port 3001 is running from the root checkout on the integrated branch. After EC-1 is merged, assert the `fill-zigzag` button exists and manually select it without Alt/Option on a non-transparent filled rectangle. If it is absent, stop and fix the integration before continuing.
+5. After all merges: run the final `yarn test:typecheck` and focused tests, then draw one canvas using every new feature as the closing shot.
+6. **Do not push demo merges to origin** unless the user explicitly wants to keep them.
 
 ## Teardown
 
