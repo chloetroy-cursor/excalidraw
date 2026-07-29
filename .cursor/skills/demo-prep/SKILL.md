@@ -11,10 +11,11 @@ Verify the repo is in a demo-ready state before a customer call. Everything here
 
 1. **Repo state**: `git status` is clean, current branch is `master`, and `master` matches `origin/master` (`git fetch && git status`). If not, run the `demo-reset` skill first.
 2. **No leftovers**: `git branch -a` shows only `master`; `git worktree list` shows only this checkout; `git stash list` is empty (or contains only known stashes the user wants).
-3. **App boots**: start `yarn start` in the background and confirm the Vite server serves on http://localhost:3001. The core whiteboard needs no backend (see `AGENTS.md`).
+3. **App boots**: start `yarn start` from the root checkout in the background and confirm the Vite server serves on http://localhost:3001. Record that checkout's branch so parallel subagents cannot silently switch the branch behind the live app. The core whiteboard needs no backend (see `AGENTS.md`).
 4. **Typecheck passes**: `yarn test:typecheck` exits clean. (Skip the full test suite unless asked — `AGENTS.md` documents known flaky/lint gotchas that are not demo blockers.)
 5. **Jira ready**: demo project `EC` ("Excalidraw Canvas") on `chloe-fe-demo.atlassian.net` (cloudId `12ae6c59-1802-485b-8408-fa4fbb703d2c`) has the standing tickets in "To Do" — EC-1 (zigzag fill style), EC-2 (star fill style), and EC-3 (star shape tool). Create fresh EC tickets if the planned demo scenario needs them.
-6. **Report**: give the user a short ready/not-ready summary with anything that needs attention.
+6. **Parallel-demo guard**: when EC-1 will be used, require its implementation to expose a standalone `fill-zigzag` control, include a focused test that clicks it without Alt/Option, and be merged into the checkout serving port 3001 before reporting Zigzag as visible.
+7. **Report**: give the user a short ready/not-ready summary with anything that needs attention.
 
 ## Demo inventory (what exists to demo with)
 
