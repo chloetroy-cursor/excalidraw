@@ -1,0 +1,38 @@
+---
+description: Excalidraw monorepo layout, canonical commands, and known test/lint gotchas
+alwaysApply: true
+---
+
+# Monorepo Workflow
+
+## Package boundaries
+
+- Editor features → `packages/{excalidraw,element,common,math,utils}`
+- Runnable app → `excalidraw-app/` (start with `yarn start` → http://localhost:3001)
+- Examples/docs → `examples/`, `dev-docs/` (require `yarn build:packages` first)
+- Dev server resolves `@excalidraw/*` from **source** — do not run `build:packages` for normal editor work
+
+## Canonical commands (repo root)
+
+| Goal | Command |
+|------|---------|
+| Typecheck | `yarn test:typecheck` |
+| Focused tests | `yarn test:app --watch=false <path>` |
+| Update snapshots | `yarn test:update` (review diffs deliberately) |
+| Lint | `yarn test:code` |
+| Auto-fix | `yarn fix` |
+| Branch from ticket | `./scripts/br.sh <ec-n> <slug>` |
+
+Prefer `yarn test:typecheck` as the first verification after type-union changes. Use focused tests, not the full suite, unless the user asks.
+
+## Known gotchas — do not "fix" unless asked
+
+- `actionStyles.test.tsx`: 16 prettier warnings make `yarn test:code` exit non-zero; Vitest worker IPC can flake on this file
+- vite-plugin-checker may show false-positive TS errors in `MermaidToExcalidraw.test.tsx`; authoritative check is `yarn test:typecheck`
+- Optional backends (collab WS, AI) are **not** required for core drawing
+
+## Demo safety
+
+- Never push seeded demo bugs (`seed-demo-bug` skill)
+- Never commit directly to `master` unless explicitly asked
+- Use `demo-reset` / `./scripts/demo-reset.sh` to return to pristine baseline

@@ -4,7 +4,9 @@ Copy-paste prompts for each demo, in the order that tells the best story. Every 
 
 **Skills vs prompts — how it works:** you type prompts; the skills fire automatically when relevant (that's part of the demo — "the agent follows our team's conventions without being told"). Only two things are run deliberately: seed a bug *before* the Debug demo, and the parallel-agents scenario. Everything else is just typing.
 
-**Before any demo:** say "prep the demo" in a fresh chat (runs the `demo-prep` skill). **After any demo:** say "reset the demo" (runs `demo-reset`).
+**Before any demo:** say "prep the demo" in a fresh chat (runs the `demo-prep` skill), or type `/prep-demo`. **After any demo:** say "reset the demo" (runs `demo-reset`).
+
+**Show the full kit:** open `.cursor/README.md` — rules, skills, commands, subagents, and hooks with demo prompts for each surface.
 
 ---
 
@@ -102,6 +104,23 @@ For the conflict-resolution finale (longer demos): use EC-1 + EC-2 instead — t
 - **45 min:** Ask → Plan (EC-3) → Parallel (EC-1 + EC-3) → Debug (bug A). Plan mode's output becomes Agent B's work — the arc writes itself.
 - **Backup if live coding stalls:** every demo resets in seconds (`demo-reset`), and Ask mode prompts always work — fall back to architecture Q&A.
 
+## 7. Customization surfaces — "encode your team's knowledge"
+
+**Setup:** none. Open `.cursor/` in the file tree.
+**Talk track:** "Cursor isn't just a chat box — you encode rules, skills, commands, subagents, and hooks so the agent follows *your* process."
+
+Quick demos (pick 2–3):
+
+| Surface | What to show | Prompt |
+|---------|--------------|--------|
+| **Rules** | Open `packages/element/src/bounds.ts` | "How does hit-testing work for diamonds?" — geometry rule provides context |
+| **Skills** | Clean master | "Pick up EC-3 and implement it" — shape + commit skills fire |
+| **Commands** | Fresh chat | Type `/prep-demo` or `/verify-change` |
+| **Subagents** | After a shape change | "Use geometry-auditor to verify star vertices are consistent" |
+| **Hooks** | Seed bug A first | Ask agent to `git push` — hook blocks it |
+
+End by opening `.cursor/README.md`: "this is how you encode *your* team's knowledge — rules for guardrails, skills for workflows, hooks for safety."
+
 ## The unified pitch
 
-Each demo secretly showcases the same thing: the repo's skills (`adding-excalidraw-shape`, `commit-writer`, `seed-demo-bug`, `parallel-agents-demo`, `demo-prep`/`demo-reset`) turn one-off agent behavior into your team's repeatable process. End demos by opening `.cursor/skills/` and saying: "this is how you encode *your* team's knowledge."
+Each demo secretly showcases the same thing: the repo's Cursor kit (rules, skills, commands, subagents, hooks) turns one-off agent behavior into your team's repeatable process. End demos by opening `.cursor/` and walking through the inventory in `.cursor/README.md`.

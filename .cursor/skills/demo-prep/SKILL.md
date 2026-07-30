@@ -19,12 +19,29 @@ Verify the repo is in a demo-ready state before a customer call. Everything here
 
 ## Demo inventory (what exists to demo with)
 
+- `.cursor/README.md` — full audit of rules, skills, commands, subagents, hooks, and when to use each.
 - `demos/CHEATSHEET.md` — the demoer's script: copy-paste prompts per mode (Ask/Plan/Build/Debug/Multi-task/Parallel), talk tracks, and story arcs. Point the user here if they ask "what do I type".
 
-- `adding-excalidraw-shape` skill — full recipe for the "agent builds a feature" demo (star/hexagon/triangle shape tool).
-- `commit-writer` skill — conventional commits with EC ticket IDs.
-- `scripts/br.sh` — ticket-based branch creation (`./scripts/br.sh ec-12 add star shape`).
-- `scripts/demo-reset.sh` + `demo-reset` skill — post-demo teardown.
-- `seed-demo-bug` skill — plant a curated bug for Debug mode demos.
-- `parallel-agents-demo` skill — multi-agent ticket work with review/merge finale.
-- Jira project `EC` — real tickets to drive Agent-mode and parallel-agent demos.
+**Rules** (`.cursor/rules/`):
+- `monorepo-workflow` — always-on package boundaries and gotchas
+- `element-geometry` — render/hit-test sync when editing `packages/element`
+- `localization-en-only` — only edit `en.json`
+- `testing-conventions` — Vitest helpers and snapshot discipline
+
+**Skills** (`.cursor/skills/`):
+- `adding-excalidraw-shape` — full recipe for shape tool demos (star/hexagon/triangle)
+- `adding-excalidraw-action` — properties panel / keyboard action wiring
+- `verify-excalidraw-change` — post-change typecheck + focused tests
+- `commit-writer` — conventional commits with EC ticket IDs
+- `demo-reset` + `scripts/demo-reset.sh` — post-demo teardown
+- `seed-demo-bug` — plant a curated bug for Debug mode demos
+- `parallel-agents-demo` — multi-agent ticket work with review/merge finale
+
+**Commands** (`.cursor/commands/`): `/prep-demo`, `/verify-change`
+
+**Subagents** (`.cursor/agents/`): `geometry-auditor`, `snapshot-reviewer`
+
+**Hooks** (`.cursor/hooks.json`): blocks `git push` when seeded demo bug fingerprints are detected
+
+- `scripts/br.sh` — ticket-based branch creation (`./scripts/br.sh ec-12 add star shape`)
+- Jira project `EC` — real tickets to drive Agent-mode and parallel-agent demos

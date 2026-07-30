@@ -1,0 +1,39 @@
+---
+description: Render vertices must match hit-test geometry for Excalidraw elements
+globs: packages/element/**/*.{ts,tsx},packages/utils/src/shape.ts
+alwaysApply: false
+---
+
+# Element Geometry Contract
+
+The most error-prone part of adding or changing shapes: **rendering and hit-testing must use identical vertices**.
+
+## Pipeline
+
+```
+getXPoints (bounds.ts)     → roughjs polygon (shape.ts) → canvas + SVG export
+deconstructXElement (utils.ts) → collision, distance, bounds line-segments
+getPolygonShape (utils/shape.ts) → export polygon helpers
+```
+
+If these diverge, the shape **draws correctly but is not clickable where it appears** — the classic demo bug in `seed-demo-bug` bug A.
+
+## Rules
+
+- When adding shape `X`, add **both** `getXPoints` and `deconstructXElement`; model on `diamond`
+- Never "simplify" corner math in only one of bounds vs utils
+- `getElementAbsoluteCoords` reuses `x/y/width/height` for bounding-box shapes — no change needed if using that model
+- After geometry edits, run `yarn test:typecheck` — `assertNever` in `shape.ts` and `typeChecks.ts` catches missing switch cases
+
+## Quick audit
+
+For any shape type, grep these files for the type string and confirm all branches exist:
+
+- `packages/element/src/bounds.ts`
+- `packages/element/src/utils.ts`
+- `packages/element/src/shape.ts`
+- `packages/element/src/collision.ts`
+- `packages/element/src/distance.ts`
+- `packages/utils/src/shape.ts`
+
+Use the `geometry-auditor` subagent for a structured read-only review.

@@ -1,0 +1,38 @@
+---
+description: Vitest helpers, focused runs, and deliberate snapshot updates for Excalidraw tests
+globs: "**/*.{test,spec}.{ts,tsx}"
+alwaysApply: false
+---
+
+# Testing Conventions
+
+## Harness
+
+- Integration tests: `packages/excalidraw/tests/` using `render` from `test-utils.ts`
+- Helpers: `tests/helpers/api.ts` (`API.createElement`), `helpers/ui.ts`, `queries/toolQueries.ts` (`getByToolName`, `toolbar-${TOOL_TYPE}`)
+- Element unit tests: `packages/element/tests/`
+- Use `reseed(7)` in drag-create tests for determinism
+
+## Running tests
+
+```bash
+# Focused (preferred)
+yarn test:app --watch=false packages/excalidraw/tests/<file>.tsx
+
+# Update snapshots (deliberate — review diffs)
+yarn test:update
+# or: yarn test:app --update --watch=false <path>
+```
+
+## Snapshot rules
+
+- Snapshots live in `__snapshots__/` beside test files
+- After UI/export/restore changes, update snapshots intentionally and review churn
+- Do not blind-accept large snapshot diffs — use `snapshot-reviewer` subagent to classify
+- Toolbar order, seed values, and i18n key changes often cause expected churn
+
+## Gotchas
+
+- `actionStyles.test.tsx`: assertion failures may be real bugs; worker IPC crashes are a known flake — distinguish the two
+- Prefer `API.createElement` over hand-built element objects
+- End verification with `yarn test:typecheck` after type union changes

@@ -1,0 +1,29 @@
+---
+description: Only edit en.json for UI strings; other locales are Crowdin-managed
+globs: packages/excalidraw/locales/**
+alwaysApply: false
+---
+
+# Localization — English Only
+
+## Edit only `en.json`
+
+- Path: `packages/excalidraw/locales/en.json`
+- All other locale files (`fr-FR.json`, `de-DE.json`, etc.) are **Crowdin-managed**
+- Do not hand-edit non-English locale files in feature PRs
+- `percentages.json` is generated — do not edit manually
+
+## Wiring new strings
+
+- Use `t("toolBar.X")`, `t("element.X")`, or nested keys under `labels`, `hints`, `toolBar`, `element`
+- Keys are typed from `en.json` via `TranslationKeys`
+- New toolbar tools need both `toolBar.*` and `element.*` entries
+- Languages appear in the app only when coverage ≥ 85% (`i18n.ts` `COMPLETION_THRESHOLD`)
+
+## Coverage check
+
+```bash
+yarn locales-coverage
+```
+
+For multi-task demos comparing locales, diff keys in `en.json` against another locale — report missing keys, do not fill them in.

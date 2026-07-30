@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/block-seeded-bug-push.mjs",
+        "matcher": "git push"
+      }
+    ]
+  }
+}
