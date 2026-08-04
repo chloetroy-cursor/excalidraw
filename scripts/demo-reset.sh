@@ -13,6 +13,7 @@ PRESERVE_PATHS=(
   ".cursor/skills/demo-prep"
   ".cursor/skills/demo-reset"
   ".cursor/skills/demo-build"
+  ".cursor/skills/jira-demo-tickets"
   ".cursor/skills/parallel-agents-demo"
   ".cursor/commands/prep-demo.md"
   ".cursor/README.md"
