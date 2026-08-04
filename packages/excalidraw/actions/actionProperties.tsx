@@ -105,6 +105,7 @@ import {
   TextAlignMiddleIcon,
   FillHachureIcon,
   FillCrossHatchIcon,
+  FillStarIcon,
   FillSolidIcon,
   SloppinessArchitectIcon,
   SloppinessArtistIcon,
@@ -154,7 +155,6 @@ import {
   restoreCaretPosition,
 } from "../hooks/useTextEditorFocus";
 
-import { getShortcutKey } from "../shortcut";
 
 import { register } from "./register";
 
@@ -496,11 +496,6 @@ export const actionChangeFillStyle = register<ExcalidrawElement["fillStyle"]>({
     };
   },
   PanelComponent: ({ elements, appState, updateData, app }) => {
-    const selectedElements = getSelectedElements(elements, appState);
-    const allElementsZigZag =
-      selectedElements.length > 0 &&
-      selectedElements.every((el) => el.fillStyle === "zigzag");
-
     return (
       <fieldset>
         <legend>{t("labels.fill")}</legend>
@@ -510,11 +505,8 @@ export const actionChangeFillStyle = register<ExcalidrawElement["fillStyle"]>({
             options={[
               {
                 value: "hachure",
-                text: `${
-                  allElementsZigZag ? t("labels.zigzag") : t("labels.hachure")
-                } (${getShortcutKey("Alt-Click")})`,
-                icon: allElementsZigZag ? FillZigZagIcon : FillHachureIcon,
-                active: allElementsZigZag ? true : undefined,
+                text: t("labels.hachure"),
+                icon: FillHachureIcon,
                 testId: `fill-hachure`,
               },
               {
@@ -522,6 +514,18 @@ export const actionChangeFillStyle = register<ExcalidrawElement["fillStyle"]>({
                 text: t("labels.crossHatch"),
                 icon: FillCrossHatchIcon,
                 testId: `fill-cross-hatch`,
+              },
+              {
+                value: "zigzag",
+                text: t("labels.zigzag"),
+                icon: FillZigZagIcon,
+                testId: `fill-zigzag`,
+              },
+              {
+                value: "star",
+                text: t("labels.star"),
+                icon: FillStarIcon,
+                testId: `fill-star`,
               },
               {
                 value: "solid",
@@ -538,16 +542,7 @@ export const actionChangeFillStyle = register<ExcalidrawElement["fillStyle"]>({
               (hasSelection) =>
                 hasSelection ? null : appState.currentItemFillStyle,
             )}
-            onClick={(value, event) => {
-              const nextValue =
-                event.altKey &&
-                value === "hachure" &&
-                selectedElements.every((el) => el.fillStyle === "hachure")
-                  ? "zigzag"
-                  : value;
-
-              updateData(nextValue);
-            }}
+            onClick={(value) => updateData(value)}
           />
         </div>
       </fieldset>

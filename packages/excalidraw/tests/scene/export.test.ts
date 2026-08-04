@@ -21,6 +21,7 @@ import * as exportUtils from "../../scene/export";
 import {
   diamondFixture,
   ellipseFixture,
+  rectangleFixture,
   rectangleWithLinkFixture,
   textFixture,
 } from "../fixtures/elementFixture";
@@ -112,6 +113,32 @@ describe("exportToSvg", () => {
       "fill",
       BACKGROUND_COLOR,
     );
+  });
+
+  it("exports deterministic Star fill geometry", async () => {
+    const starRectangle = {
+      ...rectangleFixture,
+      width: 120,
+      height: 90,
+      fillStyle: "star",
+      index: "a0",
+    } as NonDeletedExcalidrawElement;
+
+    const first = await exportUtils.exportToSvg(
+      [starRectangle],
+      DEFAULT_OPTIONS,
+      null,
+    );
+    const second = await exportUtils.exportToSvg(
+      [starRectangle],
+      DEFAULT_OPTIONS,
+      null,
+    );
+    const starFill = first.querySelector('[data-fill-style="star"]');
+
+    expect(starFill).not.toBeNull();
+    expect(starFill!.querySelectorAll("path").length).toBeGreaterThan(1);
+    expect(first.innerHTML).toBe(second.innerHTML);
   });
 
   it("with dark mode", async () => {

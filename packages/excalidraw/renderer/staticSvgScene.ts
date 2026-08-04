@@ -149,14 +149,32 @@ const renderElementToSvg = (
     case "diamond":
     case "ellipse": {
       const shape = ShapeCache.generateElementShape(element, renderConfig);
-      const node = roughSVGDrawWithPrecision(
-        rsvg,
-        shape,
-        MAX_DECIMALS_FOR_SVG_EXPORT,
-      );
+      const drawables = Array.isArray(shape) ? shape : [shape];
+      const node =
+        drawables.length === 1
+          ? roughSVGDrawWithPrecision(
+              rsvg,
+              drawables[0],
+              MAX_DECIMALS_FOR_SVG_EXPORT,
+            )
+          : svgRoot.ownerDocument.createElementNS(SVG_NS, "g");
+      if (drawables.length > 1) {
+        drawables.forEach((drawable) => {
+          node.appendChild(
+            roughSVGDrawWithPrecision(
+              rsvg,
+              drawable,
+              MAX_DECIMALS_FOR_SVG_EXPORT,
+            ),
+          );
+        });
+      }
       if (opacity !== 1) {
         node.setAttribute("stroke-opacity", `${opacity}`);
         node.setAttribute("fill-opacity", `${opacity}`);
+      }
+      if (element.fillStyle === "star") {
+        node.setAttribute("data-fill-style", "star");
       }
       node.setAttribute("stroke-linecap", "round");
       node.setAttribute(

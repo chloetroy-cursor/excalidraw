@@ -65,6 +65,7 @@ import {
   getElementAbsoluteCoords,
 } from "./bounds";
 import { shouldTestInside } from "./collision";
+import { getStarFillPaths } from "./starFill";
 
 import type {
   ExcalidrawElement,
@@ -74,6 +75,9 @@ import type {
   ExcalidrawFreeDrawElement,
   ElementsMap,
   ExcalidrawLineElement,
+  ExcalidrawRectangleElement,
+  ExcalidrawDiamondElement,
+  ExcalidrawEllipseElement,
   Arrowhead,
 } from "./types";
 
@@ -231,8 +235,11 @@ export const generateRoughOptions = (
     case "embeddable":
     case "diamond":
     case "ellipse": {
-      options.fillStyle = element.fillStyle;
-      options.fill = isTransparent(element.backgroundColor)
+      options.fillStyle =
+        element.fillStyle === "star" ? "solid" : element.fillStyle;
+      options.fill =
+        element.fillStyle === "star" ||
+        isTransparent(element.backgroundColor)
         ? undefined
         : applyDarkModeFilter(element.backgroundColor, isDarkMode);
       if (element.type === "ellipse") {
@@ -243,8 +250,10 @@ export const generateRoughOptions = (
     case "line":
     case "freedraw": {
       if (isPathALoop(element.points)) {
-        options.fillStyle = element.fillStyle;
+        options.fillStyle =
+          element.fillStyle === "star" ? "solid" : element.fillStyle;
         options.fill =
+          element.fillStyle === "star" ||
           element.backgroundColor === "transparent"
             ? undefined
             : applyDarkModeFilter(element.backgroundColor, isDarkMode);
@@ -743,6 +752,38 @@ export const generateLinearCollisionShape = (
   }
 };
 
+const getStarFillDrawables = (
+  element:
+    | ExcalidrawRectangleElement
+    | ExcalidrawDiamondElement
+    | ExcalidrawEllipseElement,
+  generator: RoughGenerator,
+  isDarkMode: boolean,
+): Drawable[] => {
+  if (
+    element.fillStyle !== "star" ||
+    isTransparent(element.backgroundColor)
+  ) {
+    return [];
+  }
+
+  const path = getStarFillPaths(element)
+    .map((star) => star.path)
+    .join(" ");
+
+  return path
+    ? [
+        generator.path(path, {
+          seed: element.seed,
+          stroke: applyDarkModeFilter(element.backgroundColor, isDarkMode),
+          strokeWidth: Math.max(1, element.strokeWidth),
+          roughness: 0,
+          disableMultiStroke: true,
+        }),
+      ]
+    : [];
+};
+
 /**
  * Generates the roughjs shape for given element.
  *
@@ -811,7 +852,9 @@ const _generateElementShape = (
           ),
         );
       }
-      return shape;
+      return element.type === "rectangle" && element.fillStyle === "star"
+        ? [...getStarFillDrawables(element, generator, isDarkMode), shape]
+        : shape;
     }
     case "diamond": {
       let shape: ElementShapes[typeof element.type];
@@ -858,7 +901,9 @@ const _generateElementShape = (
           generateRoughOptions(element, false, isDarkMode),
         );
       }
-      return shape;
+      return element.fillStyle === "star"
+        ? [...getStarFillDrawables(element, generator, isDarkMode), shape]
+        : shape;
     }
     case "ellipse": {
       const shape: ElementShapes[typeof element.type] = generator.ellipse(
@@ -868,7 +913,9 @@ const _generateElementShape = (
         element.height,
         generateRoughOptions(element, false, isDarkMode),
       );
-      return shape;
+      return element.fillStyle === "star"
+        ? [...getStarFillDrawables(element, generator, isDarkMode), shape]
+        : shape;
     }
     case "line":
     case "arrow": {

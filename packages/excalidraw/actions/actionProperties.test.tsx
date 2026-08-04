@@ -97,6 +97,40 @@ describe("element locking", () => {
       expect(crossHatchButton).toHaveClass("active");
     });
 
+    it("should render and apply Zigzag fill without a modifier key", () => {
+      const rect = API.createElement({
+        type: "rectangle",
+        backgroundColor: "red",
+        fillStyle: "hachure",
+      });
+      API.setElements([rect]);
+      API.setSelectedElements([rect]);
+
+      const zigzagButton = queryByTestId(document.body, `fill-zigzag`);
+      expect(zigzagButton).not.toBe(null);
+
+      fireEvent.click(zigzagButton!, { altKey: false });
+
+      expect(API.getSelectedElements()[0].fillStyle).toBe("zigzag");
+    });
+
+    it("should render and apply Star fill without a modifier key", () => {
+      const rect = API.createElement({
+        type: "rectangle",
+        backgroundColor: "red",
+        fillStyle: "hachure",
+      });
+      API.setElements([rect]);
+      API.setSelectedElements([rect]);
+
+      const starButton = queryByTestId(document.body, `fill-star`);
+      expect(starButton).not.toBe(null);
+
+      fireEvent.click(starButton!, { altKey: false });
+
+      expect(API.getSelectedElements()[0].fillStyle).toBe("star");
+    });
+
     it("should not show fill style selected element's background is transparent", () => {
       const rect = API.createElement({
         type: "rectangle",
