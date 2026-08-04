@@ -9,7 +9,7 @@ Demonstrate multiple Cursor agents independently building real Jira tickets on s
 
 ## Pre-flight
 
-Run the `demo-prep` skill first: clean `master`, app boots, typecheck passes, and the standing tickets are in "To Do":
+Run the `demo-prep` skill first: clean application code on `master`, exactly one verified app server on port 3001, typecheck passes, and the standing tickets are in "To Do". Load `demo-build` for the final integration and acceptance gates:
 
 - **EC-1** — expose the "Zigzag" fill style in the properties panel
 - **EC-2** — add a "Star" fill style option
@@ -48,11 +48,12 @@ Each agent must work on its own branch and commit using the `commit-writer` skil
 ## Review and merge finale
 
 1. When agents finish, transition their tickets to "In Review"/"Done" in Jira (nice on-camera moment via the Atlassian MCP).
-2. For each branch: review the diff (`git diff master...<branch>`) and run `yarn test:typecheck` plus its focused tests. A committed subagent branch is not yet visible in the app running from the root checkout; do not report the feature as available until it is integrated there.
+2. For each branch: review the diff (`git diff master...<branch>`) and run `yarn test:typecheck` plus its focused tests. Require zero failures and zero unhandled errors. A committed subagent branch is not yet visible in the app running from the root checkout; do not report the feature as available until it is integrated there.
 3. Merge into local `master` one branch at a time. In the clean pairing both merges are automatic; in the conflict pairing, let the agent resolve the `actionProperties.tsx` conflict live and explain the resolution.
-4. Confirm the dev server on port 3001 is running from the root checkout on the integrated branch. After EC-1 is merged, assert the `fill-zigzag` button exists and manually select it without Alt/Option on a non-transparent filled rectangle. If it is absent, stop and fix the integration before continuing.
-5. After all merges: run the final `yarn test:typecheck` and focused tests, then draw one canvas using every new feature as the closing shot.
-6. **Do not push demo merges to origin** unless the user explicitly wants to keep them.
+4. After merging, run `scripts/demo-server.sh start` and `scripts/demo-server.sh assert`. Never use bare `yarn start`, never accept port 3002, and never reuse a server started from another worktree/branch.
+5. Confirm the browser is on localhost:3001. After EC-1 is merged, assert the left-panel `fill-zigzag` button exists and select it without Alt/Option on a non-transparent filled rectangle. For EC-2, do the same with `fill-star`. If either is absent, stop and fix the integration before continuing.
+6. After all merges: run the final `yarn test:typecheck` and focused tests, then draw one canvas using every new feature as the closing shot.
+7. **Do not push demo merges to origin** unless the user explicitly wants to keep them.
 
 ## Teardown
 

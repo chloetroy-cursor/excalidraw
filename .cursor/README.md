@@ -7,7 +7,7 @@ This folder encodes **team knowledge** for Cursor demos in the Excalidraw monore
 | Surface | Location | Count | Purpose |
 |---------|----------|-------|---------|
 | **Rules** | `.cursor/rules/*.mdc` | 4 | Always-on or file-scoped guardrails |
-| **Skills** | `.cursor/skills/*/SKILL.md` | 8 | Reusable workflows the agent auto-invokes |
+| **Skills** | `.cursor/skills/*/SKILL.md` | 9 | Reusable workflows the agent auto-invokes |
 | **Commands** | `.cursor/commands/*.md` | 2 | Explicit slash-invoked shortcuts (legacy-friendly) |
 | **Subagents** | `.cursor/agents/*.md` | 2 | Named specialists for delegation |
 | **Hooks** | `.cursor/hooks.json` + `.cursor/hooks/` | 1 | Deterministic guardrails around shell commands |
@@ -75,6 +75,7 @@ User types a prompt
 | `commit-writer` | commit, ship it | Conventional commits with EC ticket IDs |
 | `demo-prep` | prep the demo, pre-flight | Pre-call checklist |
 | `demo-reset` | reset the demo, tear down | Post-demo cleanup |
+| `demo-build` | EC-1/2/3, Build demo | Ticket-to-visible-app acceptance gate |
 | `seed-demo-bug` | seed a bug, debug demo | Plant curated bugs for Debug mode |
 | `parallel-agents-demo` | parallel agents, multi-agent | EC-1/2/3 parallel ticket demo |
 

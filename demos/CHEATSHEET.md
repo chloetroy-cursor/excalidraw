@@ -12,7 +12,7 @@ Copy-paste prompts for each demo, in the order that tells the best story. Every 
 
 ## 1. Ask mode — "understand a codebase you've never seen"
 
-**Setup:** none. Clean master.
+**Setup:** run `demo-prep` so the app has exactly one verified server on localhost:3001.
 **Talk track:** "This is Excalidraw — a real open-source monorepo, 600+ TypeScript files across five packages. Let's ask Cursor about architecture nobody on your team wants to page through."
 
 > How does hit-testing work in this codebase? When I click on the canvas, how does Excalidraw decide which element I clicked — and where could the rendered shape and the clickable area get out of sync?
@@ -47,13 +47,13 @@ Bigger-scope backup (no ticket needed):
 
 Short version (~5 min, small diff):
 
-> Pick up Jira ticket EC-1 and implement it.
+> Pick up Jira ticket EC-1 and implement it using the demo-build acceptance gate. Do not stop until the focused tests pass with zero failures and Zigzag is visible and clickable without modifier keys in the left properties panel at http://localhost:3001.
 
 Full version (~15 min, big diff, uses the shape skill):
 
-> Pick up Jira ticket EC-3 and implement it end to end. When you're done, verify with typecheck and commit.
+> Pick up Jira ticket EC-3 and implement it end to end using the demo-build acceptance gate. When you're done, verify with typecheck, confirm the integrated root checkout is served at http://localhost:3001, and commit.
 
-What fires automatically: `adding-excalidraw-shape` (the how), `br.sh` conventions and `commit-writer` (the hygiene). Point at the branch name (`feat/ec-3-...-<date>`) and commit message (`feat(editor): ... (EC-3)`) — "nobody told it our conventions in the prompt."
+What fires automatically: `demo-build` (the live acceptance gate), `adding-excalidraw-shape` (the how), `br.sh` conventions, and `commit-writer` (the hygiene). Point at the branch name (`feat/ec-3-...-<date>`) and commit message (`feat(editor): ... (EC-3)`) — "nobody told it our conventions in the prompt."
 
 ## 4. Debug mode — "find the bug from the symptom"
 
