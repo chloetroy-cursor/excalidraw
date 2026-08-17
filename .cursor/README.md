@@ -8,7 +8,7 @@ This folder encodes **team knowledge** for Cursor demos in the Excalidraw monore
 |---------|----------|-------|---------|
 | **Rules** | `.cursor/rules/*.mdc` | 4 | Always-on or file-scoped guardrails |
 | **Skills** | `.cursor/skills/*/SKILL.md` | 8 | Reusable workflows the agent auto-invokes |
-| **Commands** | `.cursor/commands/*.md` | 2 | Explicit slash-invoked shortcuts (legacy-friendly) |
+| **Commands** | `.cursor/commands/*.md` | 3 | Explicit slash-invoked shortcuts (legacy-friendly) |
 | **Subagents** | `.cursor/agents/*.md` | 2 | Named specialists for delegation |
 | **Hooks** | `.cursor/hooks.json` + `.cursor/hooks/` | 1 | Deterministic guardrails around shell commands |
 | **Demo script** | `demos/CHEATSHEET.md` | 1 | Copy-paste prompts per Cursor mode |
@@ -31,7 +31,7 @@ User types a prompt
 └──────────────┘
        │
        ▼
-┌──────────────┐     user types /prep-demo or /verify-change
+┌──────────────┐     user types /prep-demo, /demo-reset, or /verify-change
 │   Commands   │ ◄── thin wrappers over skills (demo UX)
 └──────────────┘
        │
@@ -73,8 +73,8 @@ User types a prompt
 | `adding-excalidraw-action` | add action, keyboard shortcut, menu item | Action registration + UI wiring |
 | `verify-excalidraw-change` | verify, typecheck, run tests | Post-change verification gate |
 | `commit-writer` | commit, ship it | Conventional commits with EC ticket IDs |
-| `demo-prep` | prep the demo, pre-flight | Pre-call checklist |
-| `demo-reset` | reset the demo, tear down | Post-demo cleanup |
+| `demo-prep` | prep the demo, pre-flight | Pre-call checklist; uses `scripts/demo-server.sh` |
+| `demo-reset` | reset the demo, tear down | Post-demo cleanup back to `origin/master` |
 | `seed-demo-bug` | seed a bug, debug demo | Plant curated bugs for Debug mode |
 | `parallel-agents-demo` | parallel agents, multi-agent | EC-1/2/3 parallel ticket demo |
 
@@ -83,6 +83,7 @@ User types a prompt
 | Command | Delegates to |
 |---------|--------------|
 | `/prep-demo` | `demo-prep` skill |
+| `/demo-reset` | `demo-reset` skill |
 | `/verify-change` | `verify-excalidraw-change` skill |
 
 ## Subagents

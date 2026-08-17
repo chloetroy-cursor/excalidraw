@@ -5,43 +5,91 @@ description: Pre-flight check before running a Cursor demo in the Excalidraw rep
 
 # Demo Prep
 
-Verify the repo is in a demo-ready state before a customer call. Everything here is read-only except starting the dev server.
+Verify the repo is demo-ready before a customer call. Use `./scripts/demo-server.sh` for all verification and server startup — **never run bare `yarn start` without passing verify first**.
 
-## Checklist
+## Demo modes (pick one)
 
-1. **Repo state**: `git status` is clean, current branch is `master`, and `master` matches `origin/master` (`git fetch && git status`). If not, run the `demo-reset` skill first.
-2. **No leftovers**: `git branch -a` shows only `master`; `git worktree list` shows only this checkout; `git stash list` is empty (or contains only known stashes the user wants).
-3. **App boots**: start `yarn start` from the root checkout in the background and confirm the Vite server serves on http://localhost:3001. Record that checkout's branch so parallel subagents cannot silently switch the branch behind the live app. The core whiteboard needs no backend (see `AGENTS.md`).
-4. **Typecheck passes**: `yarn test:typecheck` exits clean. (Skip the full test suite unless asked — `AGENTS.md` documents known flaky/lint gotchas that are not demo blockers.)
-5. **Jira ready**: demo project `EC` ("Excalidraw Canvas") on `chloe-fe-demo.atlassian.net` (cloudId `12ae6c59-1802-485b-8408-fa4fbb703d2c`) has the standing tickets in "To Do" — EC-1 (zigzag fill style), EC-2 (star fill style), and EC-3 (star shape tool). Create fresh EC tickets if the planned demo scenario needs them.
-6. **Parallel-demo guard**: when EC-1 will be used, require its implementation to expose a standalone `fill-zigzag` control, include a focused test that clicks it without Alt/Option, and be merged into the checkout serving port 3001 before reporting Zigzag as visible.
-7. **Report**: give the user a short ready/not-ready summary with anything that needs attention.
+### A — Live-build demo (implement EC tickets during the call)
 
-## Demo inventory (what exists to demo with)
+- Clean `master` matching `origin/master`, no feature branches.
+- EC-1 / EC-2 / EC-3 in Jira **To Do** (not Done).
+- Baseline master does **not** include fill-zigzag / fill-star yet — you build them live.
 
-- `.cursor/README.md` — full audit of rules, skills, commands, subagents, hooks, and when to use each.
-- `demos/CHEATSHEET.md` — the demoer's script: copy-paste prompts per mode (Ask/Plan/Build/Debug/Multi-task/Parallel), talk tracks, and story arcs. Point the user here if they ask "what do I type".
+### B — Showcase demo (show pre-built EC-1 / EC-2 fill styles)
 
-**Rules** (`.cursor/rules/`):
-- `monorepo-workflow` — always-on package boundaries and gotchas
-- `element-geometry` — render/hit-test sync when editing `packages/element`
-- `localization-en-only` — only edit `en.json`
-- `testing-conventions` — Vitest helpers and snapshot discipline
+- EC-1 and EC-2 implementation is **merged on `master` and pushed to `origin/master`**.
+- `packages/element/src/starFill.ts` exists (or `FillStyle` includes `"star"`).
+- `./scripts/demo-server.sh verify --showcase` passes (typecheck + fill-style tests).
+- After start, manually confirm **Zigzag** and **Star** buttons on a filled rectangle at http://localhost:3001.
 
-**Skills** (`.cursor/skills/`):
-- `adding-excalidraw-shape` — full recipe for shape tool demos (star/hexagon/triangle)
-- `adding-excalidraw-action` — properties panel / keyboard action wiring
-- `verify-excalidraw-change` — post-change typecheck + focused tests
-- `commit-writer` — conventional commits with EC ticket IDs
-- `demo-reset` + `scripts/demo-reset.sh` — post-demo teardown
-- `seed-demo-bug` — plant a curated bug for Debug mode demos
-- `parallel-agents-demo` — multi-agent ticket work with review/merge finale
+If the user hasn't said which mode, **default to A**. Use B only when star fill is actually present in the current checkout — mentioning zigzag/star in the talk track is not enough. `--showcase` on a live-build baseline fails because those tests do not exist yet.
 
-**Commands** (`.cursor/commands/`): `/prep-demo`, `/verify-change`
+## Checklist (run in order)
 
-**Subagents** (`.cursor/agents/`): `geometry-auditor`, `snapshot-reviewer`
+1. **Survey repo state**
+   - `git fetch && git status`
+   - `git branch -a -vv`, `git worktree list`, `git stash list`
+   - Record current branch — parallel agents must not switch the checkout serving the live app.
 
-**Hooks** (`.cursor/hooks.json`): blocks `git push` when seeded demo bug fingerprints are detected
+2. **Repo cleanliness (mode A only)**
+   - Clean tree on `master`, matching `origin/master`.
+   - Only `master` branch, no extra worktrees.
+   - If dirty or on a feature branch from a prior demo → run `demo-reset` first (after confirming nothing precious will be lost).
 
-- `scripts/br.sh` — ticket-based branch creation (`./scripts/br.sh ec-12 add star shape`)
-- Jira project `EC` — real tickets to drive Agent-mode and parallel-agent demos
+3. **Verify before start (both modes — mandatory)**
+   ```bash
+   # Mode A — live-build demo (typecheck only):
+   ./scripts/demo-server.sh verify
+
+   # Mode B — showcase pre-built EC-1/EC-2 fills:
+   ./scripts/demo-server.sh verify --showcase
+   ```
+   Runs `yarn test:typecheck` first. Mode B also runs fill-zigzag / fill-star click tests. **Stop here if either fails** — do not start the server. TypeScript errors make `vite-plugin-checker` show a full-screen overlay that looks like a crash.
+
+4. **Start demo server (both modes)**
+   ```bash
+   ./scripts/demo-server.sh start          # mode A
+   ./scripts/demo-server.sh start --showcase   # mode B
+   ```
+   - Confirms http://localhost:3001 (or `VITE_APP_PORT`) — **never port 1001**.
+   - If port already in use, script reuses it; confirm URL in terminal output.
+   - Do not accept Vite falling back to another port silently — fix the conflict first.
+
+5. **Feature smoke (mode B — EC-1 / EC-2)**
+   - Draw a rectangle with a non-transparent fill.
+   - Select it; confirm `fill-zigzag` and `fill-star` buttons exist in the properties panel.
+   - Click each **without** Alt/Option; confirm fill renders (not hachure fallback for star).
+   - Hard-refresh if the panel looks stale.
+
+6. **Jira ready**
+   - Project `EC` on `chloe-fe-demo.atlassian.net` (cloudId `12ae6c59-1802-485b-8408-fa4fbb703d2c`).
+   - Mode A: EC-1, EC-2, EC-3 in **To Do**.
+   - Mode B: tickets may be Done/In Review — note status in report.
+
+7. **Report**
+   - Ready / not-ready summary.
+   - Demo mode (A or B), branch, URL, verify result, smoke result.
+   - Point to `demos/CHEATSHEET.md` for copy-paste prompts.
+
+## What blocks a demo (hard stops)
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Full-screen TS overlay | `yarn test:typecheck` would fail | Fix types; re-run `demo-server.sh verify` |
+| Blank / broken UI after agent work | Serving wrong branch or unverified code | Checkout integrated branch; verify + restart |
+| Feature missing in panel | Mode B code not on branch serving :3001 | Merge to master or checkout feature branch |
+| Wrong port | Typo (3001 vs 1001) or port conflict | Use URL from `demo-server.sh start` output |
+
+## Demo inventory
+
+- `demos/CHEATSHEET.md` — demo script and prompts
+- `.cursor/README.md` — rules, skills, commands, subagents
+- `./scripts/demo-server.sh` — verify + gated start (use this, not raw `yarn start`)
+- `./scripts/demo-reset.sh` — post-demo teardown back to `origin/master`
+- Skills: `verify-excalidraw-change`, `demo-reset`, `parallel-agents-demo`, `adding-excalidraw-action`
+
+## Rules
+
+- **Typecheck before start, always.** No exceptions for customer demos.
+- After any agent session touching `packages/element` or `FillStyle`, re-run verify before claiming ready.
+- Do not report a feature as visible until it passes verify on the checkout serving port 3001.

@@ -98,3 +98,6 @@ fi
 
 echo "== demo-reset complete =="
 git status --short --branch
+echo ""
+echo "Next: ./scripts/demo-server.sh verify && ./scripts/demo-server.sh start"
+echo "Demo URL: http://localhost:${VITE_APP_PORT:-3001}/"
