@@ -433,6 +433,7 @@ import { LassoTrail } from "../lasso";
 import { EraserTrail } from "../eraser";
 import { getShortcutKey } from "../shortcut";
 import { tryParseSpreadsheet } from "../charts";
+import { parseDelimitedTable, renderTable } from "../tables";
 import { AnimationController } from "../renderer/animation";
 
 import ConvertElementTypePopup, {
@@ -3725,7 +3726,22 @@ class App extends React.Component<AppProps, AppState> {
       return;
     }
 
-    // ------------------- Spreadsheet -------------------
+    // ------------------- Table -------------------
+
+    if (!isPlainPaste && data.text) {
+      const rows = parseDelimitedTable(data.text);
+      if (rows) {
+        this.addElementsFromPasteOrLibrary({
+          elements: renderTable(rows),
+          files: null,
+          position:
+            this.editorInterface.formFactor === "desktop" ? "cursor" : "center",
+        });
+        return;
+      }
+    }
+
+    // ------------------- Spreadsheet chart -------------------
 
     if (!isPlainPaste && data.text) {
       const result = tryParseSpreadsheet(data.text);
