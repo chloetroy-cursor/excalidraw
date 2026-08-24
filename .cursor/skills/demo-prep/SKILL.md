@@ -52,7 +52,7 @@ If the user hasn't said which mode, **default to A**. Use B only when star fill 
    ./scripts/demo-server.sh start --showcase   # mode B
    ```
    - Confirms http://localhost:3001 (or `VITE_APP_PORT`) — **never port 1001**.
-   - If port already in use, script reuses it; confirm URL in terminal output.
+   - `start` **recycles** whatever is already on that port. A leftover Vite from another branch serves stale transforms (e.g. fill panel missing Star). Do not reuse it.
    - Do not accept Vite falling back to another port silently — fix the conflict first.
 
 5. **Feature smoke (mode B — EC-1 / EC-2)**
@@ -77,7 +77,7 @@ If the user hasn't said which mode, **default to A**. Use B only when star fill 
 |---------|-------|-----|
 | Full-screen TS overlay | `yarn test:typecheck` would fail | Fix types; re-run `demo-server.sh verify` |
 | Blank / broken UI after agent work | Serving wrong branch or unverified code | Checkout integrated branch; verify + restart |
-| Feature missing in panel | Mode B code not on branch serving :3001 | Merge to master or checkout feature branch |
+| Feature missing in panel | Mode B code not on branch serving :3001, **or stale Vite transform cache after `br.sh` / checkout** | Recycle with `demo-server.sh start`; curl the served `actionProperties.tsx` for the new `testId`; hard-refresh |
 | Wrong port | Typo (3001 vs 1001) or port conflict | Use URL from `demo-server.sh start` output |
 
 ## Demo inventory
