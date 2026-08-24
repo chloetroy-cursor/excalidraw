@@ -86,16 +86,26 @@ stop_server() {
     fi
     rm -f "$PID_FILE"
   fi
+
+  # Also drop leftover yarn/vite listeners (started outside this script).
+  # Those keep a transform cache from the previous branch and hide new controls.
+  if command -v lsof >/dev/null 2>&1; then
+    local extra
+    extra="$(lsof -tiTCP:"${DEMO_PORT}" -sTCP:LISTEN 2>/dev/null || true)"
+    if [[ -n "$extra" ]]; then
+      echo "Stopping leftover listener(s) on ${DEMO_PORT}: ${extra}"
+      # shellcheck disable=SC2086
+      kill $extra 2>/dev/null || true
+      sleep 1
+    fi
+  fi
 }
 
 start_server() {
   verify
 
-  if port_open; then
-    echo "Port ${DEMO_PORT} already in use — reusing existing server."
-    echo "Demo URL: http://localhost:${DEMO_PORT}/"
-    return 0
-  fi
+  echo "→ recycling port ${DEMO_PORT} (avoids stale Vite after branch switch)"
+  stop_server
 
   echo "→ starting yarn start (log: ${LOG_FILE})"
   nohup yarn start >"${LOG_FILE}" 2>&1 &
@@ -104,7 +114,7 @@ start_server() {
   wait_for_port
   echo "Demo server ready: http://localhost:${DEMO_PORT}/"
   echo "Branch: $(git branch --show-current)"
-  echo "Hard-refresh the browser after any code change."
+  echo "Hard-refresh the browser (Cmd-Shift-R) after start."
 }
 
 status_server() {

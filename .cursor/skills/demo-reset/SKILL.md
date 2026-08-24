@@ -47,8 +47,8 @@ If the user needs skill or script changes to survive reset, those commits **must
 
 ```bash
 git checkout master
-git add .cursor/README.md .cursor/skills/demo-prep/ .cursor/skills/demo-reset/ .cursor/commands/ scripts/demo-server.sh scripts/demo-reset.sh package.json .gitignore
-git commit -m "chore(demo): gate demo server on typecheck"
+git add .cursor/README.md .cursor/skills/demo-prep/ .cursor/skills/demo-reset/ .cursor/skills/adding-excalidraw-action/ .cursor/skills/verify-excalidraw-change/ .cursor/commands/ scripts/demo-server.sh scripts/demo-reset.sh package.json .gitignore
+git commit -m "chore(demo): recycle Vite on start; catch stale panel transforms"
 git push origin master
 ```
 

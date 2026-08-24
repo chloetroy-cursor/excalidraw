@@ -47,13 +47,15 @@ yarn test:code
 
 Note: `actionStyles.test.tsx` has 16 known prettier warnings that make `test:code` exit non-zero on a clean checkout — do not chase these unless the task explicitly requires lint cleanup.
 
-## Step 5 — Manual smoke (shape/action features)
+## Step 5 — Recycle Vite + manual smoke (shape/action features)
 
-When adding shapes or toolbar actions:
+A leftover Vite on :3001 often predates the feature branch and serves a cached transform. Reusing it is how new panel controls “don’t show up.”
 
-1. Confirm `yarn start` serves on http://localhost:3001
-2. Draw/select/resize the new feature
-3. For fill-style changes: click the new option without modifier keys
+1. Recycle the demo server (`./scripts/demo-server.sh start`) — do not attach to a pre-existing listener
+2. Curl the served file and assert the new `testId` / export is present (see `adding-excalidraw-action`)
+3. Hard-refresh http://localhost:3001
+4. Draw/select/resize the new feature
+5. For fill-style changes: non-transparent background, then click the new option without modifier keys
 
 ## Report format
 
