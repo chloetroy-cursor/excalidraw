@@ -20,11 +20,11 @@
     }
 
     &__divider {
-      width: 1px;
-      height: 1.5rem;
+      width: $toolbar-divider-width;
+      height: $toolbar-divider-height;
       align-self: center;
       background-color: var(--default-border-color);
-      margin: 0 0.25rem;
+      margin: 0 $toolbar-divider-gutter;
 
       @include isMobile {
         margin: 0;

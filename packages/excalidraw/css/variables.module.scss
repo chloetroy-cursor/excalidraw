@@ -23,6 +23,10 @@ $color-blue-6: #228be6;
 $color-blue-7: #1c7ed6;
 $color-blue-8: #1971c2;
 
+$toolbar-divider-width: 1px;
+$toolbar-divider-height: 1.5rem;
+$toolbar-divider-gutter: 0.25rem;
+
 @mixin isMobile() {
   @at-root .excalidraw--mobile#{&} {
     @content;
