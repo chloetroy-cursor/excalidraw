@@ -138,6 +138,24 @@ const DefaultOverwriteConfirmDialog = () => {
   );
 };
 
+const BASE_UI_SPACING = {
+  menuTopGap: 6,
+  toolbarColGap: 4,
+  toolbarRowGap: 1,
+  toolbarInnerRowGap: 1,
+  islandPadding: 1,
+  collabMarginLeft: 8,
+};
+
+const COMPACT_UI_SPACING = {
+  menuTopGap: 4,
+  toolbarInnerRowGap: 0.5,
+};
+
+const TOOLBAR_BUTTON_WIDTH_REM = 2.25;
+const TOOLBAR_CHROME_WIDTH_REM = 1.75;
+const TOOLBAR_BUTTON_COUNT = 11;
+
 const LayerUI = ({
   actionManager,
   appState,
@@ -165,23 +183,14 @@ const LayerUI = ({
   const isCompactStylesPanel = stylesPanelMode === "compact";
   const tunnels = useInitializeTunnels();
 
-  const spacing = isCompactStylesPanel
-    ? {
-        menuTopGap: 4,
-        toolbarColGap: 4,
-        toolbarRowGap: 1,
-        toolbarInnerRowGap: 0.5,
-        islandPadding: 1,
-        collabMarginLeft: 8,
-      }
-    : {
-        menuTopGap: 6,
-        toolbarColGap: 4,
-        toolbarRowGap: 1,
-        toolbarInnerRowGap: 1,
-        islandPadding: 1,
-        collabMarginLeft: 8,
-      };
+  const spacing = {
+    ...BASE_UI_SPACING,
+    ...(isCompactStylesPanel ? COMPACT_UI_SPACING : null),
+  };
+
+  const toolbarMaxWidth = `${
+    TOOLBAR_BUTTON_COUNT * TOOLBAR_BUTTON_WIDTH_REM + TOOLBAR_CHROME_WIDTH_REM
+  }rem`;
 
   const TunnelsJotaiProvider = tunnels.tunnelsJotai.Provider;
 
@@ -346,6 +355,7 @@ const LayerUI = ({
                       >
                         <Island
                           padding={spacing.islandPadding}
+                          style={{ "--toolbar-max-width": toolbarMaxWidth }}
                           className={clsx("App-toolbar", {
                             "zen-mode": appState.zenModeEnabled,
                             "App-toolbar--compact": isCompactStylesPanel,

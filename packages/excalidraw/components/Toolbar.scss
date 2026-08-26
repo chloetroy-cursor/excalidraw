@@ -2,6 +2,11 @@
 
 .excalidraw {
   .App-toolbar {
+    // Budget computed in LayerUI from the number of rendered tools; the
+    // toolbar is centred between the styles panel and the share controls and
+    // must not grow underneath either of them.
+    max-width: var(--toolbar-max-width, none);
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -58,6 +63,7 @@
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
+    max-width: calc(100vw - #{$toolbar-edge-gutter} * 2);
     z-index: 1;
   }
 

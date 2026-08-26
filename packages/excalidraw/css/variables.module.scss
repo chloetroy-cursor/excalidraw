@@ -26,6 +26,7 @@ $color-blue-8: #1971c2;
 $toolbar-divider-width: 1px;
 $toolbar-divider-height: 1.5rem;
 $toolbar-divider-gutter: 0.25rem;
+$toolbar-edge-gutter: 1rem;
 
 @mixin isMobile() {
   @at-root .excalidraw--mobile#{&} {
