@@ -52,6 +52,8 @@ interface ColorPickerProps {
   palette?: ColorPaletteCustom | null;
   topPicks?: ColorTuple;
   updateData: (formData?: any) => void;
+  /** Force trigger-only chrome (no top-picks row), e.g. desktop toolbar. */
+  compact?: boolean;
 }
 
 const ColorPickerPopupContent = ({
@@ -216,6 +218,7 @@ const ColorPickerTrigger = ({
   mode = "background",
   onToggle,
   editingTextElement,
+  compact,
 }: {
   color: string | null;
   label: string;
@@ -223,9 +226,10 @@ const ColorPickerTrigger = ({
   mode?: "background" | "stroke";
   onToggle: () => void;
   editingTextElement?: boolean;
+  compact?: boolean;
 }) => {
   const stylesPanelMode = useStylesPanelMode();
-  const isCompactMode = stylesPanelMode !== "full";
+  const isCompactMode = compact || stylesPanelMode !== "full";
   const isMobileMode = stylesPanelMode === "mobile";
   const handleClick = (e: React.MouseEvent) => {
     // use pointerdown so we run before outside-close logic
@@ -289,13 +293,14 @@ export const ColorPicker = ({
   topPicks,
   updateData,
   appState,
+  compact,
 }: ColorPickerProps) => {
   const openRef = useRef(appState.openPopup);
   useEffect(() => {
     openRef.current = appState.openPopup;
   }, [appState.openPopup]);
   const stylesPanelMode = useStylesPanelMode();
-  const isCompactMode = stylesPanelMode !== "full";
+  const isCompactMode = compact || stylesPanelMode !== "full";
 
   return (
     <div>
@@ -330,6 +335,7 @@ export const ColorPicker = ({
             type={type}
             mode={type === "elementStroke" ? "stroke" : "background"}
             editingTextElement={!!appState.editingTextElement}
+            compact={compact}
             onToggle={() => {
               // atomic switch: if another popup is open, close it first, then open this one next tick
               if (appState.openPopup === type) {

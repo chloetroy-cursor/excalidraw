@@ -126,6 +126,29 @@ describe("actionStyles", () => {
       },
     );
   });
+
+  it("renders compact wrapped toolbar color keys without panel chrome", async () => {
+    await withExcalidrawDimensions({ width: 1440, height: 900 }, async () => {
+      UI.clickTool("rectangle");
+
+      const toolbarColors = await waitFor(() => {
+        const node = document.querySelector(
+          '[data-testid="toolbar-color-controls"]',
+        );
+        expect(node).not.toBeNull();
+        return node as HTMLElement;
+      });
+
+      expect(toolbarColors.querySelector("h3")).toBeNull();
+      expect(
+        toolbarColors.querySelector(".color-picker__top-picks"),
+      ).toBeNull();
+      expect(
+        toolbarColors.querySelectorAll(".color-picker__button.active-color")
+          .length,
+      ).toBe(2);
+    });
+  });
 });
 
 describe("mobile toolbar color controls", () => {
