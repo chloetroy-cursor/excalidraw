@@ -163,12 +163,12 @@ export const ToolbarColorControls = ({
     >
       {showStroke && (
         <div className="toolbar-color-controls__item">
-          {renderAction("changeStrokeColor")}
+          {renderAction("changeStrokeColor", { compact: true })}
         </div>
       )}
       {showBackground && (
         <div className="toolbar-color-controls__item">
-          {renderAction("changeBackgroundColor")}
+          {renderAction("changeBackgroundColor", { compact: true })}
         </div>
       )}
     </div>
