@@ -357,10 +357,11 @@ export const actionChangeStrokeColor = register<
   },
   PanelComponent: ({ elements, appState, updateData, app, data }) => {
     const { stylesPanelMode } = getStylesPanelInfo(app);
+    const compact = Boolean(data?.compact);
 
     return (
       <>
-        {stylesPanelMode === "full" && (
+        {stylesPanelMode === "full" && !compact && (
           <h3 aria-hidden="true">{t("labels.stroke")}</h3>
         )}
         <ColorPicker
@@ -380,6 +381,7 @@ export const actionChangeStrokeColor = register<
           elements={elements}
           appState={appState}
           updateData={updateData}
+          compact={compact}
         />
       </>
     );
@@ -442,10 +444,11 @@ export const actionChangeBackgroundColor = register<
   },
   PanelComponent: ({ elements, appState, updateData, app, data }) => {
     const { stylesPanelMode } = getStylesPanelInfo(app);
+    const compact = Boolean(data?.compact);
 
     return (
       <>
-        {stylesPanelMode === "full" && (
+        {stylesPanelMode === "full" && !compact && (
           <h3 aria-hidden="true">{t("labels.background")}</h3>
         )}
         <ColorPicker
@@ -467,6 +470,7 @@ export const actionChangeBackgroundColor = register<
           elements={elements}
           appState={appState}
           updateData={updateData}
+          compact={compact}
         />
       </>
     );
