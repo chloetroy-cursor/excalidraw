@@ -1133,6 +1133,23 @@ export const FillCrossHatchIcon = createIcon(
   modifiedTablerIconProps,
 );
 
+export const FillDotsIcon = createIcon(
+  <>
+    <path
+      d="M5.879 2.625h8.242a3.254 3.254 0 0 1 3.254 3.254v8.242a3.254 3.254 0 0 1-3.254 3.254H5.88a3.254 3.254 0 0 1-3.254-3.254V5.88a3.254 3.254 0 0 1 3.254-3.254Z"
+      stroke="currentColor"
+      strokeWidth="1.25"
+    />
+    <path
+      d="M6 6h.01M10 6h.01M14 6h.01M6 10h.01M10 10h.01M14 10h.01M6 14h.01M10 14h.01M14 14h.01"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </>,
+  modifiedTablerIconProps,
+);
+
 export const FillSolidIcon = createIcon(
   <>
     <g clipPath="url(#a)">
