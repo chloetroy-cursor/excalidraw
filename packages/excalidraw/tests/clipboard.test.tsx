@@ -124,6 +124,45 @@ describe("general paste behavior", () => {
   });
 });
 
+describe("paste CSV as a table", () => {
+  it("creates a grouped grid of bound text cells", async () => {
+    mouse.moveTo(300, 200);
+    pasteWithCtrlCmdV(
+      "Name,Role,Location\nAda,Engineer,London\nLin,Designer,Taipei",
+    );
+
+    await waitFor(() => {
+      const cells = h.elements.filter(
+        (element) => element.type === "rectangle",
+      );
+      const labels = h.elements.filter((element) => element.type === "text");
+
+      expect(cells).toHaveLength(9);
+      expect(labels).toHaveLength(9);
+      expect(new Set(cells.flatMap((cell) => cell.groupIds))).toHaveLength(1);
+      expect(labels.map((label) => label.text)).toEqual(
+        expect.arrayContaining([
+          "Name",
+          "Role",
+          "Location",
+          "Ada",
+          "Engineer",
+          "London",
+          "Lin",
+          "Designer",
+          "Taipei",
+        ]),
+      );
+      expect(
+        labels.every((label) =>
+          cells.some((cell) => cell.id === label.containerId),
+        ),
+      ).toBe(true);
+      expect(h.state.openDialog).toBeNull();
+    });
+  });
+});
+
 describe("paste text as single lines", () => {
   it("should create an element for each line when copying with Ctrl/Cmd+V", async () => {
     const text = "sajgfakfn\naaksfnknas\nakefnkasf";
