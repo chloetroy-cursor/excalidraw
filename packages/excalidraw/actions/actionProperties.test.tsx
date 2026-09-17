@@ -1,4 +1,8 @@
-import { fireEvent, queryByTestId } from "@testing-library/react";
+import {
+  fireEvent,
+  queryAllByTestId,
+  queryByTestId,
+} from "@testing-library/react";
 
 import {
   COLOR_PALETTE,
@@ -12,6 +16,8 @@ import { Excalidraw } from "../index";
 import { API } from "../tests/helpers/api";
 import { UI } from "../tests/helpers/ui";
 import { render } from "../tests/test-utils";
+
+const { h } = window;
 
 describe("element locking", () => {
   beforeEach(async () => {
@@ -30,11 +36,14 @@ describe("element locking", () => {
       API.setAppState({
         currentItemBackgroundColor: color,
       });
-      const activeColor = queryByTestId(
+      const activeColors = queryAllByTestId(
         document.body,
         `color-top-pick-${color}`,
       );
-      expect(activeColor).toHaveClass("active");
+      expect(activeColors.length).toBeGreaterThan(0);
+      activeColors.forEach((activeColor) =>
+        expect(activeColor).toHaveClass("active"),
+      );
     });
 
     it("should show fill style when background non-transparent", () => {
@@ -95,6 +104,24 @@ describe("element locking", () => {
 
       const crossHatchButton = queryByTestId(document.body, `fill-cross-hatch`);
       expect(crossHatchButton).toHaveClass("active");
+    });
+
+    it("should apply dots fill style to selected and subsequent elements", () => {
+      const rect = API.createElement({
+        type: "rectangle",
+        backgroundColor: "red",
+        fillStyle: "solid",
+      });
+      API.setElements([rect]);
+      API.setSelectedElements([rect]);
+
+      const dotsFillButton = queryByTestId(document.body, `fill-dots`);
+      expect(dotsFillButton).not.toBe(null);
+      fireEvent.click(dotsFillButton!);
+
+      expect(API.getElement(rect).fillStyle).toBe("dots");
+      expect(h.state.currentItemFillStyle).toBe("dots");
+      expect(API.createElement({ type: "rectangle" }).fillStyle).toBe("dots");
     });
 
     it("should not show fill style selected element's background is transparent", () => {
