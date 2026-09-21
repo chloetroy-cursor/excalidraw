@@ -433,6 +433,7 @@ import { LassoTrail } from "../lasso";
 import { EraserTrail } from "../eraser";
 import { getShortcutKey } from "../shortcut";
 import { tryParseSpreadsheet } from "../charts";
+import { createTableElements, parseCSV } from "../csv";
 import { AnimationController } from "../renderer/animation";
 
 import ConvertElementTypePopup, {
@@ -3723,6 +3724,27 @@ class App extends React.Component<AppProps, AppState> {
         sceneY,
       });
       return;
+    }
+
+    // ------------------- CSV table -------------------
+
+    if (!isPlainPaste && data.text) {
+      const rows = parseCSV(data.text);
+      if (rows) {
+        const elements = convertToExcalidrawElements(
+          createTableElements(rows),
+          {
+            regenerateIds: true,
+          },
+        );
+        this.addElementsFromPasteOrLibrary({
+          elements,
+          files: null,
+          position:
+            this.editorInterface.formFactor === "desktop" ? "cursor" : "center",
+        });
+        return;
+      }
     }
 
     // ------------------- Spreadsheet -------------------
